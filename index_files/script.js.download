@@ -1,0 +1,2279 @@
+// for Assoc Link Swiper
+function assocLinkSwiper() {
+  const swiper = new Swiper(".swiper", {
+    slidesPerView: 1,
+    direction: "horizontal",
+    spaceBetween: 40,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    enabled: true,
+    breakpoints: {
+      768: {
+        enabled: false,
+      },
+    },
+  });
+
+  function resetSwiperOnResize() {
+    swiper.update();
+    const activeIndex = swiper.activeIndex;
+    if (activeIndex !== 0) {
+      swiper.slideTo(0);
+    }
+  }
+
+  window.addEventListener("resize", resetSwiperOnResize);
+}
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof Swiper !== "undefined") {
+    assocLinkSwiper();
+  } else {
+    console.error("Swiper library is not loaded.");
+  }
+});
+
+function checkUserAgent() {
+  // if($('.app-store-link').length > 0) {
+  if (/Android/i.test(navigator.userAgent)) {
+    $("body").attr("userAgent", "android");
+  } else {
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      $("body").attr("userAgent", "ios");
+    } else {
+      $("body").attr("userAgent", "desktop");
+    }
+  }
+  // }
+}
+function openChatBot() {
+  $(".chatbot").on("click", function (e) {
+    e.preventDefault();
+    $keyreply.dispatch("OPEN_CHAT_WINDOW");
+    $keyreply.dispatch("START");
+  });
+}
+function inpageNav() {
+  var navBar = $("#myNavbar");
+  if (navBar.length > 0) {
+    $(window).on("orientationchange", function () {
+      window.location.reload();
+    });
+  }
+  if (navBar.find(".nav-item").length < 5) {
+    navBar.addClass("centered");
+  }
+  var megaMenu = $(".navbar.navbar-expand-lg");
+  navBar.find(".nav.nav-pills .nav-item .nav-link").each(function () {
+    var itemId = $(this).attr("href");
+    if ($(itemId).length < 1) {
+      $(this).closest(".nav-item").remove();
+    }
+  });
+  if (megaMenu.length > 0) {
+    var lastScrollTop = 0;
+    $(window).on("scroll", function () {
+      var st = $(this).scrollTop();
+      if (st < 20) {
+        megaMenu.removeAttr("data-scrolling");
+        megaMenu.removeClass("otw-scrolling");
+      } else {
+        if (st > lastScrollTop) {
+          // downscroll code
+          megaMenu.addClass("otw-scrolling");
+          megaMenu.attr("data-scrolling", false);
+          // $('.navbar-toggler[aria-expanded="true"]').trigger('click');
+        } else {
+          // upscroll code
+          megaMenu.addClass("otw-scrolling");
+          megaMenu.attr("data-scrolling", true);
+        }
+      }
+      lastScrollTop = st;
+    });
+  }
+  let flowing = false;
+  if (navBar.length > 0) {
+    navBar.find(".nav-link").on("click", function (e) {
+      e.preventDefault();
+      if (flowing) return;
+      flowing = true;
+      navBar.find(".nav.nav-pills .nav-link.active").removeClass("active");
+      $(this).addClass("active");
+      var activeItemLeft = $(this).position().left;
+      var activeItemWidth = $(this).innerWidth();
+      $(".tab-bar-anim").css({
+        width: activeItemWidth,
+        left: activeItemLeft,
+      });
+
+      const section = $(this)[0].getAttribute("href");
+      document.querySelector(section).scrollIntoView({ behavior: "instant" });
+
+      setTimeout(() => {
+        flowing = false;
+      }, 500);
+    });
+    var hash = window.location.hash;
+    if (hash && window.performance.navigation.type == 1) {
+      var activePageSection = navBar.find(
+        '.nav-link[href="' + window.location.hash + '"]'
+      );
+
+      if (activePageSection.length > 0) {
+        var activeItemLeft = activePageSection.position().left;
+        var activeItemWidth = activePageSection.innerWidth();
+
+        $(".tab-bar-anim").css({
+          width: activeItemWidth,
+          left: activeItemLeft,
+        });
+      }
+    }
+    var firstSectionPos = $(".page-section:first-child")?.offset()?.top - 64;
+
+    $(window).on("scroll", function (e) {
+      e.preventDefault();
+      if (
+        $(window).scrollTop() > firstSectionPos &&
+        $(window).scrollTop() < $(".footer").offset().top - 150
+      ) {
+        megaMenu.slideUp("fast");
+        navBar.attr("sticky", true);
+        navBar.slideDown("fast");
+        if ($(".nav li:not(:last-child)").css("display") !== "none") {
+          if (!flowing) {
+            requestAnimationFrame(() => {
+              var activeItemLeft = navBar
+                .find(".nav-link.active")
+                .position().left;
+
+              console.log("active", activeItemLeft);
+              var activeItemWidth = navBar
+                .find(".nav-link.active")
+                .innerWidth();
+              $(".tab-bar-anim").css({
+                width: activeItemWidth,
+                left: activeItemLeft,
+              });
+            });
+          }
+        }
+      } else {
+        navBar.attr("sticky", false);
+        navBar.slideUp("fast");
+        megaMenu.slideDown("fast");
+      }
+
+      var scrollTop = $(window).scrollTop(),
+        divOffset = navBar.offset().top,
+        dist = divOffset - scrollTop;
+      if (dist > 16) {
+        $("#myNavbar ul li:first-child a").addClass("active");
+      }
+    });
+
+    var activeTextFirstTime = navBar
+      .find(".nav.nav-pills .nav-item:first-child span")
+      .text();
+    navBar.find(".nav.nav-pills").each(function () {
+      $(this).append(
+        $(document.createElement("li"))
+          .addClass("nav-item dropdown nav-list")
+          .attr("id", "myNavbarMob")
+          .html(
+            '<a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">' +
+              activeTextFirstTime +
+              '</a><div class="dropdown-menu"></div>'
+          )
+      );
+      $(this)
+        .find(".nav-link")
+        .each(function () {
+          var href = $(this).attr("href");
+          $(this)
+            .clone()
+            .contents()
+            .wrap('<a href="' + href + "-mob" + '" class="dropdown-item" />')
+            .parent()
+            .appendTo($("#myNavbarMob .dropdown-menu"));
+
+          const navBarMob = $("#myNavbarMob");
+          if (navBarMob.length > 0) {
+            navBarMob.find("a.dropdown-item").on("click", function () {
+              const newText = $(this).find("span").text();
+              navBarMob.find(".dropdown-toggle.active").text(newText);
+            });
+            $(window).on("scroll", function () {
+              const linkitems = navBarMob.find("a.dropdown-item.active");
+              const newText = $(linkitems).find("span").text();
+              navBarMob.find(".dropdown-toggle.active").text(newText);
+            });
+          }
+        });
+    });
+
+    if ($(window).width() < 992) {
+      $(".page-section").each(function () {
+        var that = $(this);
+        var sectionId = $(this).attr("id");
+        $(this).attr("id", sectionId + "-mob");
+      });
+    }
+
+    window.addEventListener(
+      "resize",
+      function () {
+        if ($(window).width() < 992) {
+          $(".page-section").each(function () {
+            var sectionId = $(this).attr("id");
+            var arr = sectionId.split("-");
+            var myNewArray = arr.filter(function (elem, index, self) {
+              return index === self.indexOf(elem);
+            });
+            if (myNewArray.indexOf("mob") != -1) {
+              sectionId = myNewArray.join("-");
+              $(this).attr("id", sectionId);
+            } else {
+              $(this).attr("id", sectionId + "-mob");
+            }
+          });
+        } else {
+          $(".page-section").each(function () {
+            var sectionId = $(this).attr("id");
+            var str = sectionId.split("-mob");
+            $(this).attr("id", str[0]);
+          });
+        }
+      },
+      true
+    );
+  }
+}
+function highlightText(element, regex) {
+  let text = element.html();
+  text = text.replace(/(<span class="highlight">|<\/span>)/gim, "");
+
+  const newText = text
+    .replace("&amp;", "&")
+    .replace(regex, '<span class="highlight">$&</span>');
+  element.html(newText);
+}
+function alphabetFilter() {
+  if ($("[data-search-unions]").length > 0) {
+    var resultSection = $("[data-search-unions-result]");
+    var groupLength = resultSection.find(".alphabet-group").length;
+    $("[data-search-unions]").on("keyup search", function () {
+      var value = $(this).val().toLowerCase();
+
+      resultSection.find(".icon-text").filter(function () {
+        $(this)
+          .closest(".col-lg-4")
+          .toggle($(this).text().toLowerCase().indexOf(value) > -1);
+
+        // highlight text if match
+        if ($(this).text().toLowerCase().indexOf(value) > -1) {
+          const regex = new RegExp(value, "gi");
+          highlightText($(this).find(".title"), regex);
+          highlightText($(this).find(".editor"), regex);
+        }
+      });
+      resultSection.find(".alphabet-group").filter(function () {
+        $(this).toggle(
+          $(this).find(".icon-text").text().toLowerCase().indexOf(value) > -1
+        );
+      });
+      if (resultSection.find(".alphabet-group:hidden").length === groupLength) {
+        $("[data-no-result]").removeClass("d-none");
+      } else {
+        $("[data-no-result]").addClass("d-none");
+      }
+    });
+  }
+}
+function glossaryFilter() {
+  if ($("[data-search-glossaries]").length > 0) {
+    var resultSection = $("[data-search-glossaries-result]");
+    var groupLength = resultSection.find(".alphabet-group").length;
+    $("[data-search-glossaries]").on("keyup search", function () {
+      var value = $(this).val().toLowerCase();
+      resultSection.find("[data-glossary-term]").filter(function () {
+        $(this)
+          .closest(".glossary-term")
+          .toggle($(this).text().toLowerCase().indexOf(value) > -1);
+
+        // highlight text if match
+        if ($(this).text().toLowerCase().indexOf(value) > -1) {
+          const regex = new RegExp(value, "gi");
+          highlightText($(this), regex);
+        }
+      });
+      resultSection
+        .find(".alphabet-group, .result-section")
+        .filter(function () {
+          $(this).toggle(
+            $(this)
+              .find("[data-glossary-term]")
+              .text()
+              .toLowerCase()
+              .indexOf(value) > -1
+          );
+        });
+
+      if (resultSection.find(".alphabet-group:hidden").length === groupLength) {
+        $("[data-no-result]").removeClass("d-none");
+      } else {
+        $("[data-no-result]").addClass("d-none");
+      }
+    });
+  }
+}
+function videoCarousel() {
+  var videoCarousel = $("[data-video-carousel]");
+  if (videoCarousel.length > 0) {
+    videoCarousel
+      .find(".slider-for")
+      .slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        pauseOnHover: false,
+        infinite: true,
+        arrows: false,
+        fade: true,
+        asNavFor: ".slider-nav",
+      })
+      .on("beforeChange", function (event, slick, currentSlide, nextSlide) {
+        var current = $(slick.$slides[currentSlide]);
+        current.html(current.html());
+      });
+
+    videoCarousel.find(".slider-nav").slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      asNavFor: ".slider-for",
+      dots: false,
+      arrows: false,
+      infinite: true,
+      focusOnSelect: true,
+      mobileFirst: true,
+      centerMode: false,
+      initialSlide: 1,
+      variableWidth: true,
+      responsive: [
+        {
+          breakpoint: 992,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            vertical: true,
+            verticalSwiping: true,
+            variableWidth: false,
+          },
+        },
+      ],
+    });
+  }
+}
+function searchAutoComplete(input) {
+  var options = {
+    url: function (phrase) {
+      let url = input.data("url");
+      if (input.data("url").indexOf("http") < 0) {
+        url = window.location.origin + url;
+      }
+      url = new URL(url);
+      let params = new URLSearchParams(url.search);
+      params.set("t", input.val());
+      url.search = params.toString();
+      return url;
+    },
+
+    getValue: function (element) {
+      return element.value;
+    },
+    minCharNumber: 0,
+    ajaxSettings: {
+      dataType: "json",
+      method: "POST",
+      data: {
+        dataType: "json",
+      },
+      success: function (response) {
+        if (
+          response.length == 0 &&
+          input.val().length > 1 &&
+          $("#autocomplete-no-result").length < 1
+        ) {
+          let notFoundDiv = '<p id="autocomplete-no-result"> Not found</p>';
+          $(".easy-autocomplete-container").append(notFoundDiv);
+        }
+        if (input.val().length == 0 || response.length > 0) {
+          $("#autocomplete-no-result").remove();
+        }
+      },
+    },
+
+    preparePostData: function (data) {
+      data.phrase = input.val();
+      return data;
+    },
+    requestDelay: 200,
+    template: {
+      type: "links",
+      fields: {
+        link: "url",
+      },
+    },
+    list: {
+      match: {
+        enabled: false,
+      },
+    },
+  };
+  input.easyAutocomplete(options);
+}
+
+function formValidation() {
+  var forms = $(".needs-validation");
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener(
+      "submit",
+      function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
+  $(".form-select").selectmenu();
+  $(".datepicker").datepicker({
+    dateFormat: "dd/mm/yy",
+  });
+}
+
+function coveoRendering() {
+  let coveoFlagDesktop = false;
+  let coveoFlagMobile = false;
+  var accessToken = $("body").attr("data-accessToken");
+  var organizationId = $("body").attr("data-organizationId");
+  var searchHub = $("body").attr("data-searchHub");
+
+  if (accessToken && organizationId && searchHub) {
+    // initialize for Search Result page
+    (async () => {
+      await customElements.whenDefined("atomic-search-interface");
+      let searchInterface = $(".coveo-search-results atomic-search-interface");
+      if (searchInterface.length > 0) {
+        searchInterface = searchInterface[0];
+        await searchInterface.initialize({
+          platformUrl: "https://platform-au.cloud.coveo.com",
+          accessToken: accessToken,
+          organizationId: organizationId,
+          searchHub: searchHub,
+        });
+        searchInterface.executeFirstSearch();
+        searchInterface.i18n.addResourceBundle("en", "caption-filetype", {
+          ".html": "html",
+        });
+      }
+    })();
+    // initialize for Search Dropdown once click on Search Icon at the first time
+    $(".search-group.dropdown-toggle").on("show.bs.dropdown", function () {
+      if (
+        (!coveoFlagDesktop && $(window).width() > 991) ||
+        (!coveoFlagMobile && $(window).width() <= 991)
+      ) {
+        (async () => {
+          await customElements.whenDefined("atomic-search-interface");
+          let searchInterface = $(this)
+            .closest(".nav-item")
+            .find("atomic-search-interface");
+          if (searchInterface.length > 0) {
+            searchInterface = searchInterface[0];
+            await searchInterface.initialize({
+              platformUrl: "https://platform-au.cloud.coveo.com",
+              accessToken: accessToken,
+              organizationId: organizationId,
+              searchHub: searchHub,
+            });
+            searchInterface.executeFirstSearch();
+            searchInterface.i18n.addResourceBundle("en", "caption-filetype", {
+              ".html": "html",
+            });
+          }
+        })();
+        if ($(window).width() > 991) {
+          coveoFlagDesktop = true;
+        } else {
+          coveoFlagMobile = true;
+        }
+      }
+    });
+  }
+}
+
+function fancyBoxRendering() {
+  if ($(".fancybox").length > 0) {
+    $(".fancybox").fancybox({
+      beforeShow: function () {
+        this.inner.append(
+          '<span class="image-count">' +
+            (this.index + 1) +
+            " / " +
+            this.group.length
+        ) + "</span>";
+      },
+    });
+  }
+  if ($(".fancybox-media").length > 0) {
+    $(".fancybox-media").fancybox({
+      openEffect: "none",
+      closeEffect: "none",
+      prevEffect: "none",
+      nextEffect: "none",
+      arrows: false,
+      helpers: {
+        media: {},
+        buttons: {},
+      },
+      beforeClose: function () {
+        var video = this.inner.find("video")[0];
+        video.pause();
+        video.currentTime = 0;
+      },
+    });
+  }
+}
+
+function closeAnnouncement() {
+  const closeButton = document.getElementById("close-button");
+  const tab = document.getElementById("announcement-tab");
+
+  closeButton?.addEventListener("click", () => {
+    tab?.classList?.add("close-announcement");
+  });
+}
+
+function compassAnimation() {
+  const contentContainer = document.getElementById("contentContainer");
+  const blockContainer = document.getElementById("blockContainer");
+
+  document
+    ?.getElementById("coloured-block-1")
+    ?.querySelector("#top")
+    ?.classList.add(`colour-1`);
+  document
+    ?.getElementById("coloured-block-1")
+    ?.querySelector("#side")
+    ?.setAttribute("fill", `url(#color1`);
+
+  let selectedBlock;
+  let totalBlock = blockContainer?.childElementCount;
+
+  if (blockContainer?.children !== undefined) {
+    Array?.from(blockContainer?.children)?.forEach(function (childDiv, index) {
+      childDiv?.addEventListener("click", function () {
+        selectedBlock = index + 1;
+
+        Array?.from(blockContainer?.children).forEach(function (
+          otherChildDiv,
+          otherIndex
+        ) {
+          if (otherIndex !== index) {
+            var otherTopElement = otherChildDiv.querySelector("#top");
+            var sideElement = otherChildDiv.querySelector("#side");
+            otherTopElement.classList.add("colour-0");
+            sideElement.setAttribute("fill", `url(#grey)`);
+          }
+        });
+
+        var topElement = childDiv.querySelector("#top");
+        var sideElement = childDiv.querySelector("#side");
+
+        topElement.classList.remove(`colour-0`);
+        topElement.classList.add(`colour-${index + 1}`);
+        sideElement.setAttribute("fill", `url(#color${index + 1})`);
+
+        Array.from(contentContainer?.children).forEach(function (
+          textDiv,
+          index
+        ) {
+          if (selectedBlock === index + 1) {
+            textDiv.classList.remove("hide-block");
+          } else {
+            textDiv.classList.add("hide-block");
+          }
+        });
+      });
+    });
+  }
+
+  window.addEventListener("scroll", () => {
+    const scrollPosition = window.scrollY + 500;
+
+    // Calculate the index based on the scroll position
+    const index = Math.floor(scrollPosition / (window.innerHeight * 2));
+    // Make sure the index is within the bounds of the texts array
+    if (index >= 0 && index < totalBlock) {
+      // Update the selected block based on the scroll
+      selectedBlock = index + 1;
+
+      Array.from(blockContainer.children).forEach(function (childDiv, index) {
+        var topElement = childDiv.querySelector("#top");
+        var sideElement = childDiv.querySelector("#side");
+
+        if (selectedBlock === index + 1) {
+          topElement.classList.remove(`colour-0`);
+          topElement.classList.add(`colour-${selectedBlock}`);
+          sideElement.setAttribute("fill", `url(#color${selectedBlock})`);
+        } else {
+          topElement.classList.add(`colour-0`);
+          sideElement.setAttribute("fill", `url(#grey)`);
+        }
+      });
+
+      // Handle showing/hiding text content here based on the selected block
+      Array.from(contentContainer.children).forEach(function (
+        textDiv,
+        textIndex
+      ) {
+        if (selectedBlock === textIndex + 1) {
+          textDiv.classList.remove("hide-block");
+        } else {
+          textDiv.classList.add("hide-block");
+        }
+      });
+    }
+  });
+}
+
+function tpeQuizLogic() {
+  const question1Input = document.querySelector('[data-sc-field-name="Q1"]');
+  const question2Input = document.querySelector('[data-sc-field-name="Q2"]');
+  const question3Input = document.querySelector('[data-sc-field-name="Q3"]');
+  const question4Input = document.querySelector('[data-sc-field-name="Q4"]');
+  const question5Input = document.querySelector('[data-sc-field-name="Q5"]');
+  const question6Input = document.querySelector('[data-sc-field-name="Q6"]');
+  const question7Input = document.querySelector('[data-sc-field-name="Q7"]');
+
+  const response = {
+    question1: "",
+    question2: "",
+    question3: "",
+    question4: "",
+    question5: "",
+    question6: "",
+    question7: "",
+    question8: "",
+    questionqna: { name: "", company: "", email: "", contact: "", note: "" },
+  };
+
+  const answers = {
+    Items: [],
+  };
+
+  for (let i = 1; i <= 8; i++) {
+    const questionObj = {
+      Question: `Question ${i}`,
+      Answers: [],
+    };
+
+    answers.Items.push(questionObj);
+  }
+
+  // CONTROLS FOR QUESTION 1
+  const question1 = document.querySelectorAll(".question-1-option");
+  let selectedOption = null;
+  question1.forEach((ques) => {
+    ques.addEventListener("click", () => {
+      // Check if there is a previously selected option
+      if (selectedOption) {
+        selectedOption.classList.remove("selected");
+      }
+
+      ques.classList.add("selected");
+      selectedOption = ques;
+
+      const optionText = ques.querySelector(".text").textContent.trim();
+      answers.Items[0].Answers = [];
+      answers.Items[0].Answers.push(optionText);
+      question1Input.nodeValue = optionText;
+      question1Input.value = optionText;
+
+      if (answers.Items[0].Answers.length > 0) {
+        nextButton1.classList.add("activate-button");
+        nextButton1.disabled = false;
+      }
+    });
+  });
+
+  // CONTROLS FOR QUESTION 2
+  const dropdownButton = document.getElementById("dropdown-button");
+  const dropdownMenu = document.getElementById("dropdown-menu");
+  const dropdownIcon = document.getElementById("dropdown-icon");
+  const dropdownOptions = dropdownMenu?.querySelectorAll("li");
+
+  dropdownButton?.addEventListener("click", () => {
+    if (answers.Items[1].Answers.length > 0) {
+      nextButton2.classList.add("activate-button");
+      nextButton2.disabled = false;
+    }
+
+    dropdownIcon.classList.toggle("selected-icon");
+    dropdownMenu.classList.toggle("expanded");
+    dropdownMenu.classList.toggle("show");
+  });
+
+  dropdownOptions?.forEach((option) => {
+    option.addEventListener("click", () => {
+      const iconHTML = dropdownButton.querySelector("i").outerHTML;
+      const anchorElement = option.querySelector("li a");
+
+      dropdownButton.innerHTML = `${anchorElement.textContent} ${iconHTML}`;
+
+      // const anchorElement = option.querySelector("li a");
+      // dropdownButton.innerText = anchorElement.textContent;
+
+      dropdownButton.classList.add("selected-option");
+      dropdownMenu.classList.remove("expanded");
+    });
+  });
+
+  // Close the menu when clicking outside
+  document.addEventListener("click", (event) => {
+    if (
+      !dropdownButton?.contains(event?.target) &&
+      !dropdownMenu?.contains(event?.target)
+    ) {
+      if (answers.Items[1].Answers.length > 0) {
+        nextButton2.classList.add("activate-button");
+        nextButton2.disabled = false;
+      }
+      dropdownMenu?.classList?.remove("show");
+    }
+  });
+
+  // Add click event listeners to the menu items
+  const menuItems = dropdownMenu?.querySelectorAll("li");
+
+  menuItems?.forEach((menuItem) => {
+    menuItem.addEventListener("click", (event) => {
+      // Log the selected option
+      answers.Items[1].Answers = [];
+      answers.Items[1].Answers.push(menuItem.textContent.trim());
+      question2Input.nodeValue = answers.Items[1].Answers.join("|");
+      question2Input.value = answers.Items[1].Answers.join("|");
+
+      nextButton2.classList.add("activate-button");
+      nextButton2.disabled = false;
+
+      event.stopPropagation();
+
+      // Close the menu
+      dropdownMenu.classList.remove("show");
+      // Prevent the click event from propagating further
+    });
+  });
+
+  // CONTROLS FOR QUESTION 3
+  const question3 = document.querySelectorAll(".question-3-option");
+  const greyCircles = document.querySelectorAll(".grey-circle-prio");
+  const redText = document.querySelectorAll(".red-text");
+  let selectedCount = 0;
+  let textPriority = ["Highest priority", "Medium priority", "Lowest priority"];
+  let answer3 = [];
+
+  question3.forEach((ques, index) => {
+    ques.addEventListener("click", () => {
+      console.log(answers?.Items[2]?.Answers);
+      console.log(answers?.Items[2]?.Answers[0]?.length);
+
+      if (answers?.Items[2]?.Answers[0]?.length === 2) {
+        nextButton3.classList.add("activate-button");
+        nextButton3.disabled = false;
+      } else {
+        nextButton3.classList.remove("activate-button");
+        nextButton3.disabled = true;
+      }
+
+      ques.classList.toggle("selected");
+
+      // Toggle the class 'selected-priority' on the corresponding grey-circle element
+      greyCircles[index].classList.toggle("selected-priority");
+      redText[index].textContent = textPriority[selectedCount];
+      const isSelected = ques.classList.contains("selected");
+
+      // If it's selected, add the answer to the array
+      if (isSelected && answers.Items[2].Answers.length !== 3) {
+        answer3.push(ques.querySelector(".text").textContent.trim());
+      } else {
+        // If it's deselected, remove the answer from the array
+
+        const answerIndex = answer3.indexOf(
+          ques.querySelector(".text").textContent
+        );
+
+        if (answerIndex !== -1) {
+          answer3.splice(answerIndex, 1);
+        }
+
+        if (answers.Items[2].Answers.length >= 1) {
+          question3.forEach((item, itemIndex) => {
+            if (itemIndex !== index) {
+              item.classList.toggle("selected", false);
+            }
+          });
+
+          greyCircles.forEach((item, index) => {
+            item.classList.toggle("selected-priority", false);
+            item.textContent = null;
+          });
+
+          redText.forEach((item, index) => {
+            item.textContent = null;
+          });
+
+          answer3.length = 0;
+          selectedCount = 1;
+        }
+      }
+      answers.Items[2].Answers = [];
+      answers.Items[2].Answers.push(answer3);
+      const pipeSeparatedString = answer3.join("|");
+      question3Input.nodeValue = pipeSeparatedString;
+      question3Input.value = pipeSeparatedString;
+
+      // Update the text content of the grey-circle to the order of selection
+      if (ques.classList.contains("selected")) {
+        selectedCount++;
+        greyCircles[index].textContent = selectedCount;
+      } else {
+        selectedCount--;
+        greyCircles[index].textContent = "";
+        redText[index].textContent = "";
+      }
+    });
+  });
+
+  // CONTROLS FOR QUESTION 4
+  const question4 = document.querySelectorAll(".question-4-option");
+  let answer4 = [];
+
+  question4.forEach((ques, index) => {
+    ques.addEventListener("click", () => {
+      const greyCircle2 = ques.querySelector(".grey-circle");
+      console.log(ques);
+      const tick = ques.querySelector("#tick");
+
+      // console.log(tick)
+
+      ques.classList.toggle("selected");
+      greyCircle2.classList.toggle("selected-red-circle");
+      tick?.classList.toggle("show-icon");
+
+      // console.log(tick);
+
+      // Check if the card is selected or not
+      const isSelected = ques.classList.contains("selected");
+
+      // If it's selected, add the answer to the array
+      if (isSelected) {
+        answer4.push(ques.querySelector(".text").textContent.trim());
+      } else {
+        // If it's deselected, remove the answer from the array
+        const answerIndex = answer4.indexOf(
+          ques.querySelector(".text").textContent
+        );
+        if (answerIndex !== -1) {
+          answer4.splice(answerIndex, 1);
+        }
+      }
+
+      answers.Items[3].Answers = [];
+      answers.Items[3].Answers.push(answer4);
+      question4Input.nodeValue = answers.Items[3].Answers.join("|");
+      question4Input.value = answers.Items[3].Answers.join("|");
+      console.log(answers);
+
+      if (answers?.Items[3]?.Answers[0]?.length > 0) {
+        nextButton4.classList.add("activate-button");
+        nextButton4.disabled = false;
+      } else {
+        nextButton4.classList.remove("activate-button");
+        nextButton4.disabled = true;
+      }
+    });
+  });
+
+  // CONTROLS FOR QUESTION 5
+  const question5 = document.querySelectorAll(".question-5-option");
+  question5.forEach((ques) => {
+    ques.addEventListener("click", () => {
+      // Check if there is a previously selected option
+      if (selectedOption) {
+        selectedOption.classList.remove("selected");
+      }
+
+      ques.classList.add("selected");
+      selectedOption = ques;
+
+      const optionText = ques.querySelector(".text").textContent.trim();
+      answers.Items[4].Answers = [];
+      answers.Items[4].Answers.push(optionText);
+      question5Input.nodeValue = optionText;
+      question5Input.value = optionText;
+      console.log(answers);
+
+      if (answers.Items[4].Answers.length > 0) {
+        nextButton5.classList.add("activate-button");
+        nextButton5.disabled = false;
+      }
+    });
+  });
+
+  // CONTROLS FOR QUESTION 6
+  const question6 = document.querySelectorAll(".question-6-option");
+  question6.forEach((ques) => {
+    ques.addEventListener("click", () => {
+      // Check if there is a previously selected option
+      if (selectedOption) {
+        selectedOption.classList.remove("selected");
+      }
+
+      ques.classList.add("selected");
+      selectedOption = ques;
+
+      const optionText = ques.querySelector(".text").textContent.trim();
+      answers.Items[5].Answers = [];
+      answers.Items[5].Answers.push(optionText);
+      question6Input.nodeValue = optionText;
+      question6Input.value = optionText;
+      console.log(answers);
+
+      if (answers.Items[5].Answers.length > 0) {
+        nextButton6.classList.add("activate-button");
+        nextButton6.disabled = false;
+      }
+    });
+  });
+
+  // CONTROLS FOR QUESTION 7
+  const question7 = document.querySelectorAll(".question-7-option");
+  question7.forEach((ques) => {
+    ques.addEventListener("click", () => {
+      // Check if there is a previously selected option
+      if (selectedOption) {
+        selectedOption.classList.remove("selected");
+      }
+
+      ques.classList.add("selected");
+      selectedOption = ques;
+
+      const optionText = ques.querySelector(".text").textContent.trim();
+      answers.Items[6].Answers = [];
+      answers.Items[6].Answers.push(optionText);
+      question7Input.nodeValue = answers.Items[6].Answers.join("|");
+      question7Input.value = answers.Items[6].Answers.join("|");
+      console.log(answers);
+
+      if (answers.Items[6].Answers.length > 0) {
+        nextButton7.classList.add("activate-button");
+        nextButton7.disabled = false;
+      }
+    });
+  });
+
+  const questionContainers = [
+    document.getElementById("question-1"),
+    document.getElementById("question-2"),
+    document.getElementById("question-3"),
+    document.getElementById("question-4"),
+    document.getElementById("question-5"),
+    document.getElementById("question-6"),
+    document.getElementById("question-7"),
+    document.getElementById("question-8"),
+    document.getElementById("progress-bar"),
+    // Add more question containers here as needed
+  ];
+
+  // Initialize the current question index
+  let currentQuestionIndex = 0;
+
+  // Function to show the current question and hide the others
+  function showCurrentQuestion() {
+    questionContainers.map((container, index) => {
+      if (index === currentQuestionIndex) {
+        if (container?.style) {
+          container.style.display = "flex";
+        }
+      } else {
+        if (container?.style) {
+          container.style.display = "none";
+        }
+      }
+    });
+  }
+
+  // Overlay
+  const darkOverlay = document.querySelector(".dark-overlay");
+  const whiteOverlay = document.getElementById("white-overlay");
+
+  // Background Images
+  const firstImage = document.getElementById("first-image");
+  const secondImage = document.getElementById("second-image");
+
+  // Quiz
+  const quizContainer = document.getElementById("all-question");
+
+  // Moving Assets
+  const plane = document.getElementById("plane");
+  const cloudBed = document.getElementById("cloud-bed");
+
+  const cloudOne = document.getElementById("cloud-one");
+  const cloudTwo = document.getElementById("cloud-two");
+  const cloudThree = document.getElementById("cloud-three");
+
+  const bikerImage = document.getElementById("biker-image");
+  const boatImage = document.getElementById("boat-image");
+
+  // Loading bar
+  const loadingBar = document.getElementById("loading-white-bar");
+  const resultLoadingBar = document.getElementById("results-loading");
+
+  if (loadingBar && loadingBar.style) {
+    loadingBar.style.width = "0%";
+  }
+
+  // Animate in
+  setTimeout(() => {
+    firstImage?.classList.remove("pre-load");
+  }, 200);
+
+  setTimeout(() => {
+    secondImage?.classList.remove("pre-load");
+    firstImage?.classList.add("move-up-delay");
+  }, 1800);
+
+  // Start the quiz after 2 seconds
+
+  setTimeout(() => {
+    if (loadingBar && loadingBar.style) {
+      loadingBar.style.width = "12.5%";
+    }
+    quizContainer?.classList?.replace("hide", "show");
+    bikerImage?.classList.replace("hide", "show");
+    firstImage?.classList.add("blurred");
+    secondImage?.classList.add("blurred");
+    bikerImage?.classList.add("blurred");
+  }, 4000);
+
+  // Initially, show the first question
+  showCurrentQuestion();
+
+  // Get references to the "Next" and "Back" buttons by their IDs
+  const nextButton1 = document.getElementById("next-button-1");
+  const backButton1 = document.getElementById("back-button-1");
+
+  const nextButton2 = document.getElementById("next-button-2");
+  const backButton2 = document.getElementById("back-button-2");
+
+  const nextButton3 = document.getElementById("next-button-3");
+  const backButton3 = document.getElementById("back-button-3");
+
+  const nextButton4 = document.getElementById("next-button-4");
+  const backButton4 = document.getElementById("back-button-4");
+
+  const nextButton5 = document.getElementById("next-button-5");
+  const backButton5 = document.getElementById("back-button-5");
+
+  const nextButton6 = document.getElementById("next-button-6");
+  const backButton6 = document.getElementById("back-button-6");
+
+  const nextButton7 = document.getElementById("next-button-7");
+  const backButton7 = document.getElementById("back-button-7");
+
+  const nextButton8 = document.querySelector(".TPE-QuizSubmissionButton");
+  const skipButton8 = document.querySelector(".TPE-Quiz-Skip-Btn");
+
+  nextButton1?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+      showCurrentQuestion();
+      loadingBar.style.width = "25%";
+    }
+  });
+
+  backButton1?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      showCurrentQuestion();
+    }
+  });
+
+  nextButton2?.addEventListener("click", () => {
+    firstImage.classList.remove("move-slow");
+    secondImage.classList.remove("move-fast");
+
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+
+      quizContainer.classList.replace("show", "hide");
+      firstImage.classList.remove("blurred");
+      secondImage.classList.remove("blurred");
+      bikerImage.classList.remove("blurred");
+      bikerImage.classList.add("move-down");
+      loadingBar.style.width = "25%";
+
+      setTimeout(() => {
+        firstImage.classList.replace("initial", "move-down");
+        secondImage.classList.replace("initial", "move-down");
+
+        showCurrentQuestion();
+        setTimeout(() => {
+          quizContainer.classList.replace("hide", "show");
+          boatImage.classList.replace("disappears", "appears");
+          firstImage.classList.add("blurred");
+          secondImage.classList.add("blurred");
+          boatImage.classList.add("blurred");
+
+          loadingBar.style.width = "37.5%";
+        }, 2000);
+      }, 1300);
+    }
+  });
+
+  backButton2?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      showCurrentQuestion();
+      loadingBar.style.width = "12.5%";
+    }
+  });
+
+  nextButton3?.addEventListener("click", () => {
+    loadingBar.style.width = "50%";
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+      showCurrentQuestion();
+    }
+  });
+
+  backButton3?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+    }
+
+    firstImage.classList.add("move-slow");
+    secondImage.classList.add("move-fast");
+    quizContainer.classList.replace("show", "hide");
+    firstImage.classList.remove("blurred");
+    secondImage.classList.remove("blurred");
+    boatImage.classList.remove("blurred");
+
+    setTimeout(() => {
+      firstImage.classList.replace("move-down", "initial");
+      secondImage.classList.replace("move-down", "initial");
+      boatImage.classList.replace("appears", "disappears");
+
+      showCurrentQuestion();
+      setTimeout(() => {
+        quizContainer.classList.replace("hide", "show");
+        firstImage.classList.add("blurred");
+        secondImage.classList.add("blurred");
+        bikerImage.classList.add("blurred");
+        bikerImage.classList.remove("move-down");
+        loadingBar.style.width = "25%";
+      }, 2000);
+    }, 1000);
+  });
+
+  nextButton4?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+    }
+
+    quizContainer.classList.replace("show", "hide");
+    firstImage.classList.remove("blurred");
+
+    cloudOne.classList.remove("disappears");
+    cloudOne.classList.remove("disappears-up");
+    cloudTwo.classList.remove("disappears");
+    cloudTwo.classList.remove("disappears-up");
+    cloudThree.classList.remove("disappears");
+    cloudThree.classList.remove("disappears-up");
+    cloudOne.classList.add("blurred-xl");
+    cloudTwo.classList.add("blurred-xs");
+    cloudThree.classList.add("blurred");
+
+    boatImage.classList.remove("blurred");
+    boatImage.classList.replace("appears", "disappears");
+
+    setTimeout(() => {
+      firstImage.classList.replace("move-down", "move-down-sky");
+      setTimeout(() => {
+        cloudOne.classList.add("appears");
+      }, 100);
+
+      setTimeout(() => {
+        cloudTwo.classList.add("appears");
+      }, 300);
+
+      setTimeout(() => {
+        cloudThree.classList.add("appears");
+      }, 500);
+      showCurrentQuestion();
+      setTimeout(() => {
+        quizContainer.classList.replace("hide", "show");
+        firstImage.classList.add("blurred");
+        loadingBar.style.width = "62.5%";
+      }, 2000);
+    }, 1000);
+  });
+
+  backButton4?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      showCurrentQuestion();
+      loadingBar.style.width = "37.5%";
+    }
+  });
+
+  nextButton5?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+      showCurrentQuestion();
+      loadingBar.style.width = "75%";
+    }
+  });
+
+  backButton5?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+    }
+
+    quizContainer.classList.replace("show", "hide");
+    firstImage.classList.remove("blurred");
+
+    setTimeout(() => {
+      firstImage.classList.replace("move-down-sky", "move-down");
+      cloudOne.classList.replace("appears", "disappears-up");
+      cloudTwo.classList.replace("appears", "disappears-up");
+      cloudThree.classList.replace("appears", "disappears-up");
+
+      showCurrentQuestion();
+      setTimeout(() => {
+        boatImage.classList.replace("disappears", "appears");
+        quizContainer.classList.replace("hide", "show");
+        firstImage.classList.add("blurred");
+        boatImage.classList.add("blurred");
+        loadingBar.style.width = "50%";
+      }, 2000);
+    }, 1000);
+  });
+
+  nextButton6?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+    }
+
+    quizContainer.classList.replace("show", "hide");
+    firstImage.classList.remove("blurred");
+    secondImage.classList.remove("blurred");
+    cloudBed.classList.remove("disappears");
+    plane.classList.remove("disappears");
+
+    plane.classList.add("appears");
+    cloudOne.classList.replace("appears", "disappears");
+    cloudTwo.classList.replace("appears", "disappears");
+    cloudThree.classList.replace("appears", "disappears");
+
+    setTimeout(() => {
+      firstImage.classList.replace("move-down-sky", "move-down-plane");
+      cloudBed.classList.add("appears");
+
+      showCurrentQuestion();
+      setTimeout(() => {
+        quizContainer.classList.replace("hide", "show");
+        firstImage.classList.add("blurred");
+        secondImage.classList.add("blurred");
+        cloudBed.classList.add("blurred");
+        plane.classList.add("blurred");
+        loadingBar.style.width = "87.5%";
+      }, 3000);
+    }, 1000);
+  });
+
+  backButton6?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      showCurrentQuestion();
+      loadingBar.style.width = "62.5%";
+    }
+  });
+
+  backButton7?.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+    }
+
+    quizContainer.classList.replace("show", "hide");
+    firstImage.classList.remove("blurred");
+
+    cloudBed.classList.remove("blurred");
+    plane.classList.remove("blurred");
+
+    setTimeout(() => {
+      firstImage.classList.replace("move-down-plane", "move-down-sky");
+
+      setTimeout(() => {
+        cloudOne.classList.replace("disappears", "appears");
+        cloudTwo.classList.replace("disappears", "appears");
+        cloudThree.classList.replace("disappears", "appears");
+      }, 1000);
+
+      cloudBed.classList.replace("appears", "disappears");
+      plane.classList.replace("appears", "disappears");
+
+      showCurrentQuestion();
+      setTimeout(() => {
+        quizContainer.classList.replace("hide", "show");
+        firstImage.classList.add("blurred");
+
+        cloudOne.classList.add("blurred-xl");
+        cloudTwo.classList.add("blurred-xs");
+        cloudThree.classList.add("blurred");
+        loadingBar.style.width = "75%";
+      }, 2000);
+    }, 1000);
+  });
+
+  nextButton7?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+      showCurrentQuestion();
+    }
+    loadingBar.style.width = "100%";
+  });
+
+  nextButton8?.addEventListener("click", () => {
+    let flag = validateForm();
+
+    if (flag) {
+      if (currentQuestionIndex < questionContainers.length - 1) {
+        currentQuestionIndex++;
+        showCurrentQuestion();
+      }
+
+      setTimeout(() => {
+        resultLoadingBar.classList.replace(
+          "loading-bar-white",
+          "loading-bar-white-3"
+        );
+      }, 0);
+    }
+  });
+
+  skipButton8?.addEventListener("click", () => {
+    if (currentQuestionIndex < questionContainers.length - 1) {
+      currentQuestionIndex++;
+      showCurrentQuestion();
+    }
+
+    setTimeout(() => {
+      resultLoadingBar.classList.replace(
+        "loading-bar-white",
+        "loading-bar-white-3"
+      );
+    }, 0);
+  });
+
+  function validateForm() {
+    var name = document?.querySelectorAll('input[data-sc-field-name="name"]')[0]
+      ?.value;
+    var company = document?.querySelectorAll(
+      'input[data-sc-field-name="company"]'
+    )[0]?.value;
+    var designation = document?.querySelectorAll(
+      'input[data-sc-field-name="designation"]'
+    )[0]?.value;
+    var email = document?.querySelectorAll(
+      'input[data-sc-field-name="email"]'
+    )[0]?.value;
+    var Checkbox = document
+      ?.querySelectorAll('input[data-sc-field-name="Checkbox"]')[0]
+      ?.getAttribute("isCheck");
+    var EmailValidationClass = document
+      ?.querySelectorAll('input[data-sc-field-name="email"]')[0]
+      ?.getAttribute("class");
+    var FocusSelectElement = document?.querySelector(
+      'select[data-sc-field-name="Focus"]'
+    )?.value;
+
+    if (
+      name !== "" &&
+      company !== "" &&
+      designation !== "" &&
+      FocusSelectElement != "default" &&
+      email !== "" &&
+      EmailValidationClass === "qna-input valid" &&
+      Checkbox === "true"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  const checkElement = document.querySelectorAll(
+    'input[data-sc-field-name="Checkbox"]'
+  )[0];
+  checkElement?.addEventListener("click", function (event) {
+    // alert("hi");
+    if (checkElement.hasAttribute("isCheck")) {
+      if (checkElement.getAttribute("isCheck") === "false") {
+        checkElement.setAttribute("isCheck", "true");
+      } else {
+        checkElement.setAttribute("isCheck", "false");
+      }
+    } else {
+      checkElement.setAttribute("isCheck", "true");
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    let flag = validateForm();
+    if (flag) {
+      nextButton8?.classList.add("activate-button");
+    } else {
+      nextButton8?.classList?.remove("activate-button");
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    let flag = validateForm();
+    if (flag) {
+      nextButton8?.classList.add("activate-button");
+    } else {
+      nextButton8?.classList.remove("activate-button");
+    }
+  });
+
+  document
+    ?.getElementsByTagName("form")[0]
+    ?.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        if (!nextButton8?.classList?.contains("activate-button")) {
+          event.preventDefault(); // Prevent the Enter key press from submitting the form
+        } else {
+          nextButton8.click();
+        }
+      }
+    });
+
+  const tpeLogo = document.getElementById("tpe-logo");
+
+  // redirect to homepage on logo click
+  if (tpeLogo) {
+    tpeLogo?.addEventListener("click", function () {
+      console.log("testing");
+    });
+  }
+}
+
+function blockRedirection() {
+  const elements = document.querySelectorAll(".block-href");
+
+  elements.forEach(function (element) {
+    element.addEventListener("click", function (event) {
+      event.preventDefault();
+    });
+  });
+}
+
+// For UFSE double filters + query strings
+// This is specifically for showing the red tick when checking the checkboxes
+function nestedFilterAction() {
+  // This is for expanding the filter
+  const toggleIcons = document.querySelectorAll(".toggle-icon");
+  toggleIcons.forEach(function (toggleIcon) {
+    toggleIcon.addEventListener("click", function () {
+      const nestedFilters = toggleIcon
+        .closest(".nested-filter-li")
+        .querySelector(".nested-filters");
+      if (nestedFilters?.style?.maxHeight) {
+        nestedFilters.style.paddingTop = "0px";
+        nestedFilters.style.maxHeight = null;
+        toggleIcon.classList.remove("ri-subtract-line");
+        toggleIcon.classList.add("ri-add-line");
+      } else {
+        nestedFilters.style.paddingTop = "20px";
+        nestedFilters.style.maxHeight = "1000px";
+        toggleIcon.classList.remove("ri-add-line");
+        toggleIcon.classList.add("ri-subtract-line");
+      }
+    });
+  });
+}
+
+// For UFSE file uploads in build your profile form
+function fileUpload() {
+  document.addEventListener("DOMContentLoaded", function () {
+    var fileUploadGroups = document.querySelectorAll(".file-upload-group");
+    fileUploadGroups.forEach(function (group) {
+      var fileInput = group.querySelector(".file-input");
+      var uploadFileContainer = group.querySelector(".upload-file-container");
+      var allFiles = [];
+
+      fileInput.addEventListener("change", function () {
+        var maxFileCount = parseInt(
+          this.getAttribute("data-val-filecount-max"),
+          10
+        );
+        var newFiles = Array.from(this.files);
+
+        if (maxFileCount === 1) {
+          // If max file count is 1, replace the existing file
+          allFiles = newFiles;
+        } else {
+          // Append new files to the existing ones
+          newFiles.forEach((file) => {
+            if (!allFiles.some((f) => f.name === file.name)) {
+              allFiles.push(file);
+            }
+          });
+        }
+
+        resetAndRepopulateInput(fileInput, allFiles);
+        updateUploadedFilesDisplay(uploadFileContainer, allFiles, fileInput);
+      });
+    });
+
+    // This is to show the uploaded file at the bottom of the file input
+    function updateUploadedFilesDisplay(container, files, input) {
+      container.innerHTML = "";
+      files.forEach(function (file, index) {
+        var uploadedFileDiv = document.createElement("div");
+        uploadedFileDiv.className = "uploaded-file";
+
+        var textContainerDiv = document.createElement("div");
+        textContainerDiv.className = "text-container";
+
+        var icon = document.createElement("i");
+        icon.className = "ri-file-text-line icon";
+        textContainerDiv.appendChild(icon);
+
+        var fileNameParagraph = document.createElement("p");
+        fileNameParagraph.textContent = file.name;
+        textContainerDiv.appendChild(fileNameParagraph);
+
+        uploadedFileDiv.appendChild(textContainerDiv);
+
+        var removeText = document.createElement("p");
+        removeText.className = "remove-text";
+        removeText.textContent = "Remove";
+        removeText.style.cursor = "pointer";
+        removeText.onclick = function () {
+          files.splice(index, 1);
+          resetAndRepopulateInput(input, files);
+          updateUploadedFilesDisplay(container, files, input);
+        };
+        uploadedFileDiv.appendChild(removeText);
+
+        container.appendChild(uploadedFileDiv);
+      });
+
+      // Update the margin based on the number of files
+      if (files.length > 0) {
+        container.style.marginBottom = "24px";
+      } else {
+        container.style.marginBottom = "0";
+      }
+    }
+
+    // When user click cancel without uploading any files, the exsiting file wont be deleted
+    function resetAndRepopulateInput(input, files) {
+      var dataTransfer = new DataTransfer();
+      files.forEach((file) => dataTransfer.items.add(file));
+      input.files = dataTransfer.files;
+    }
+  });
+}
+
+(function ($, window, undefined) {
+  "use strict";
+
+  $(".slider-button .item").on("click", function (e) {
+    $(this).siblings().removeClass("active");
+    $(this).addClass("active");
+  });
+
+  inpageNav();
+  checkUserAgent();
+  alphabetFilter();
+  glossaryFilter();
+  videoCarousel();
+  openChatBot();
+  formValidation();
+  fancyBoxRendering();
+  coveoRendering();
+  closeAnnouncement();
+  compassAnimation();
+  tpeQuizLogic();
+  blockRedirection();
+  nestedFilterAction();
+  fileUpload();
+
+  if ($("[data-autocomplete]").length > 0) {
+    searchAutoComplete($("[data-autocomplete]"));
+  }
+
+  if ($(window).width() > 991) {
+    $(window).on("scroll", function () {
+      if (
+        $(".navbar.navbar-expand-lg .nav-item .dropdown-toggle").hasClass(
+          "show"
+        )
+      ) {
+        $(
+          ".navbar.navbar-expand-lg .nav-item .dropdown-toggle.show"
+        )[0].click();
+      }
+    });
+  }
+  if ($(window).width() <= 576) {
+    $(".nav-link.dropdown-toggle").on("click", function () {
+      var spaceToScroll =
+        $(this).closest("li").index() * $(this).innerHeight() + 2;
+      if ($(this).position().top > 16) {
+        $(".navbar-collapse").animate({ scrollTop: spaceToScroll }, 300);
+      }
+    });
+  }
+  if ($(window).width() < 992) {
+    $(".nav-item > .navbar-toggler").on("click", function () {
+      if ($(".nav-item > .navbar-toggler").attr("aria-expanded") == "false") {
+        $(".navbar-expand-lg").attr("showing", false);
+        $("body").removeClass("nav-opening");
+      } else {
+        $(".navbar-expand-lg").attr("showing", true);
+        $("body").addClass("nav-opening");
+      }
+    });
+    $("#dropdownUserMb").on("click", function () {
+      $(".navbar-expand-lg").attr("showing", true);
+      if (
+        $(".nav-item > .navbar-toggler[data-bs-toggle]").attr(
+          "aria-expanded"
+        ) == "true"
+      ) {
+        $("#navbar-content").removeClass("show");
+        $(".nav-item > .navbar-toggler[data-bs-toggle]")
+          .attr("aria-expanded", false)
+          .addClass("collapsed");
+      }
+    });
+  }
+  // resize screen and change position of hero carousel banner
+  const carouselIndicatorPos = function (heroBannerCarousel) {
+    var imageHeight = heroBannerCarousel.find(".image").height() + 24;
+    var carouselIndicator = heroBannerCarousel.find(".slider-control-bar");
+    carouselIndicator.css({ top: imageHeight });
+    if ($(window).width() < 992) {
+      imageHeight = heroBannerCarousel.find(".image").height() + 24;
+      if ($(window).width() < 577) {
+        imageHeight = imageHeight - 8;
+      }
+      carouselIndicator.css({ top: imageHeight });
+    } else {
+      carouselIndicator.css({ top: "" });
+    }
+  };
+  var heroBannerCarousel = $(".hero-banner-carousel");
+  if (heroBannerCarousel.length > 0) {
+    heroBannerCarousel
+      .find(".carousel-indicators .item:first-child")
+      .addClass("active");
+  }
+
+  var newsCarousel = $(".singleCarousel");
+  if (newsCarousel.length > 0) {
+    var totalSlide = newsCarousel.find(".carousel-item").length;
+    newsCarousel.find(".slider-total").text(totalSlide);
+    newsCarousel.on("slid.bs.carousel", function () {
+      var carouselData = $(this).find(".carousel-item.active");
+      var currentIndex = carouselData.index();
+      console.log(currentIndex);
+      newsCarousel.find(".slider-index").text(currentIndex + 1);
+    });
+  }
+  var autoScrollCarousel = $(".auto-scroll-carousel .slider");
+  if (autoScrollCarousel.length > 0) {
+    autoScrollCarousel.slick({
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      arrows: true,
+      infinite: true,
+      dots: true,
+      responsive: [
+        {
+          breakpoint: 576,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+          },
+        },
+      ],
+    });
+  }
+
+  var enterpriseCarousel = $(".enterprise-carousel .slider");
+  if (enterpriseCarousel.length > 0 && $(window).width() > 1141) {
+    enterpriseCarousel.slick({
+      slidesToShow: 3.5,
+      slidesToScroll: 1,
+      arrows: true,
+      variableWidth: true,
+      dots: false,
+      infinite: false,
+    });
+  }
+
+  var exclusiveDealsCarousel = $(".exclusive-deals-carousel .slider");
+  if (exclusiveDealsCarousel.length > 0) {
+    exclusiveDealsCarousel.slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      variableWidth: true,
+      infinite: false,
+      dots: true,
+      appendDots: $(".deals-carousel-navigation-container"),
+      useTransform: false,
+      responsive: [
+        {
+          breakpoint: 1025,
+          settings: {
+            infinite: false,
+            arrows: false,
+            dots: true,
+            autoplay: true,
+            autoplaySpeed: 3000,
+            touchThreshold: 1000,
+            swipeToSlide: false,
+            cssEase: "linear",
+          },
+        },
+      ],
+    });
+  }
+
+  var $copyUrl = $(".share-icon.copy-url");
+  if ($copyUrl.length > 0) {
+    var $url = $(location).attr("href");
+    var dummy = document.createElement("input");
+    $copyUrl.on("click", function () {
+      document.body.appendChild(dummy);
+      dummy.value = $url;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      $copyUrl.find(".confirmed-copied").addClass("copied");
+      setTimeout(() => {
+        $copyUrl.find(".confirmed-copied").removeClass("copied");
+      }, 1000);
+    });
+  }
+
+  $(".invite-link-wrapper .copy-url").on("click", function () {
+    var $url = $(this).siblings(".invite-link").text();
+    var dummy = document.createElement("input");
+    document.body.appendChild(dummy);
+    dummy.value = $url;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+    $(this).find(".confirmed-copied").addClass("copied");
+    setTimeout(() => {
+      $(this).find(".confirmed-copied").removeClass("copied");
+    }, 1000);
+  });
+
+  if ($(".vertical-tabs").length > 0) {
+    var hash = location.hash.replace(/^#/, "");
+    if (hash) {
+      var triggerEl = document.querySelector("#" + hash + "-tab");
+      triggerEl.click();
+    }
+  }
+
+  $(function () {
+    const sharingSection = $("#sharing-section");
+    const socialSharing = $("#social-sharing");
+    if (socialSharing.length > 0 && sharingSection.length > 0) {
+      var top = sharingSection.offset().top;
+      var bottom = sharingSection.innerHeight() + top - 200;
+      $(window).on("scroll", function () {
+        if ($(window).scrollTop() > top && $(window).scrollTop() < bottom) {
+          socialSharing.attr("sticky", true);
+        } else {
+          socialSharing.attr("sticky", false);
+        }
+      });
+    }
+  });
+  $(function () {
+    const eventRegister = $(".event-register");
+    if (eventRegister.length > 0) {
+      var top = eventRegister.offset().top;
+      var bottom =
+        eventRegister.closest(".editor-wrapper").next().offset().top + 200;
+      $(window).on("scroll", function () {
+        if ($(window).scrollTop() > top && $(window).scrollTop() < bottom) {
+          eventRegister.attr("sticky", true);
+        } else {
+          eventRegister.attr("sticky", false);
+        }
+      });
+    }
+  });
+  $(function () {
+    const $carousel = $("#newsCarousel");
+    if (!$carousel.length) return;
+    $carousel.find(".active").attr("data-processing", "");
+    $carousel[0].addEventListener("slid.bs.carousel", function () {
+      $carousel.find("[data-processing]").removeAttr("data-processing");
+      $carousel.find(".active").attr("data-processing", "");
+    });
+  });
+
+  /* ------------------------ Media Carousel Component ------------------------ */
+  var mediaCarousel = $(".media-carousel");
+  if (mediaCarousel.length > 0) {
+    var nextContent = mediaCarousel.find(".next-title");
+    mediaCarousel.find(".slider-for").slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      pauseOnHover: false,
+      autoplay: true,
+      autoplaySpeed: 10000,
+      infinite: true,
+      arrows: true,
+      fade: true,
+      asNavFor: ".slider-nav",
+      mobileFirst: true,
+      adaptiveHeight: true,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            adaptiveHeight: false,
+          },
+        },
+      ],
+    });
+    mediaCarousel.find(".slider-nav").slick({
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      asNavFor: ".slider-for",
+      dots: false,
+      arrows: false,
+      infinite: true,
+      focusOnSelect: true,
+      variableWidth: true,
+    });
+
+    if (mediaCarousel.find(".slick-initialized").length > 0) {
+      mediaCarousel
+        .find(".slider-for .slick-current .progress-bar")
+        .attr("data-loaded", true);
+      mediaCarousel
+        .find(".slider-nav .slick-current")
+        .attr("data-loaded", true);
+      $(".slick-current").attr("data-current", true);
+    }
+
+    mediaCarousel.on("afterChange", function (event, slick, currentSlide) {
+      $(".slick-slide").attr("data-current", false);
+      $(".slick-current").attr("data-current", true);
+      mediaCarousel
+        .find('.slick-current[data-loaded= "true"]')
+        .attr("data-loaded", false);
+      const nextSlide =
+        $(".slick-current").next().length > 0
+          ? $(".slick-current").next()
+          : $(".slick-current").siblings().filter("[data-slick-index=0]");
+      nextContent.text(nextSlide.find(".card-title").text());
+    });
+  }
+  /* ------------------------ Start Top Stories Component ------------------------ */
+  var topStories = $(".top-stories-carousel");
+  if (topStories.length > 0) {
+    topStories.find(".slider-for").slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      pauseOnHover: false,
+      autoplay: true,
+      autoplaySpeed: 10000,
+      infinite: true,
+      arrows: true,
+      fade: true,
+      asNavFor: ".slider-nav",
+      mobileFirst: true,
+      adaptiveHeight: true,
+      focusOnSelect: false,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            adaptiveHeight: false,
+          },
+        },
+      ],
+    });
+
+    topStories.find(".slider-nav").slick({
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      asNavFor: ".slider-for",
+      dots: false,
+      arrows: false,
+      infinite: true,
+      focusOnSelect: true,
+      vertical: true,
+      verticalSwiping: true,
+      draggable: false,
+      responsive: [
+        {
+          breakpoint: 991,
+          settings: {
+            vertical: false,
+            verticalSwiping: false,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            vertical: false,
+            verticalSwiping: false,
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          },
+        },
+      ],
+    });
+
+    // Init
+    if (topStories.find(".slick-initialized").length > 0) {
+      topStories
+        .find(".slider-for .slick-current .progress-bar")
+        .attr("data-loaded", true);
+      topStories.find(".slider-nav .slick-current").attr("data-loaded", true);
+      $(".slick-current").attr("data-current", true);
+      updateNavSlides(0);
+      $(".slider-for").slick("slickPause");
+      $(".slider-for").slick("slickSetOption", "autoplaySpeed", 10000);
+      $(".slider-for").slick("slickPlay");
+      // Reset progress bar transition duration to default before setting to 10s
+      $(".progress-bar").css("transition-duration", "");
+      $(".progress-bar").css("transition-duration", "10s");
+    }
+
+    topStories.on("afterChange", function (event, slick, currentSlide) {
+      $(".slick-slide").attr("data-current", false);
+      $(".slick-current").attr("data-current", true);
+      topStories
+        .find('.slick-current[data-loaded= "true"]')
+        .attr("data-loaded", false);
+    });
+
+    function updateNavSlides(currentSlide) {
+      const navSlider = topStories.find(".slider-nav");
+      const allSlides = navSlider.find(".slick-slide:not(.slick-cloned)");
+      const totalSlides = allSlides.length;
+
+      // Hide all slides first
+      allSlides.hide();
+
+      // Show current slide
+      allSlides.filter(`[data-slick-index="${currentSlide + 1}"]`).show();
+
+      // Show previous 3 slides
+      for (let i = 1; i <= 3; i++) {
+        const prevIndex = (currentSlide - i + totalSlides) % totalSlides;
+        allSlides.filter(`[data-slick-index="${prevIndex + 1}"]`).show();
+      }
+
+      // Show next 3 slides
+      for (let i = 1; i <= 3; i++) {
+        const nextIndex = (currentSlide + i) % totalSlides;
+        allSlides.filter(`[data-slick-index="${nextIndex + 1}"]`).show();
+      }
+
+      // Refresh slick to recalculate
+      navSlider.slick("setPosition");
+    }
+
+    // Update on slide change
+    topStories
+      .find(".slider-for")
+      .on("afterChange", function (event, slick, currentSlide) {
+        updateNavSlides(currentSlide);
+        // Reset autoplay speed and progress bar duration
+        $(".slider-for").slick("slickPause");
+        $(".slider-for").slick("slickSetOption", "autoplaySpeed", 10000);
+        $(".slider-for").slick("slickPlay");
+        // Reset progress bar transition duration to default before setting to 10s
+        $(".progress-bar").css("transition-duration", "");
+        $(".progress-bar").css("transition-duration", "10s");
+      });
+  }
+
+  /* ------------------------ End Top Stories Component ------------------------ */
+
+  var helpCenterTopic = $(".faq-cmp");
+  if (helpCenterTopic.length > 0) {
+    var hash = window.location.hash;
+    if (hash) {
+      // $('html, body').animate({
+      //   scrollTop: $($('[data-bs-target="'+hash+'"]')).offset().top - 64
+      // }, 300, function(){
+      //   $('[data-bs-target="'+hash+'"]').click();
+      // });
+      $('[data-bs-target="' + hash + '"]').click();
+    }
+  }
+
+  if ($(".event-form-cancel-button").length > 0) {
+    $(".event-form-cancel-button").on("click", function (e) {
+      var flag = false;
+      var eventForm = $(this).closest("form");
+      eventForm.find("input:not([type=hidden])").each(function () {
+        if ($(this).val().length > 0) {
+          flag = true;
+        }
+      });
+      eventForm.find("select").each(function () {
+        if ($(this).val()) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        e.preventDefault();
+        $("#confirmationModal").modal("show");
+        $(".discard-btn").on("click", function (e) {
+          if (history.length > 1) {
+            e.preventDefault();
+            history.back(1);
+          }
+        });
+      } else {
+        // performance.navigation.type = 1 : refresh page
+        // performance.navigation.type = 0 : from any page
+        if (history.length > 1 && performance.navigation.type !== 1) {
+          e.preventDefault();
+          history.back(1);
+        }
+      }
+    });
+  }
+  $("#send-sms").on("click", function (e) {
+    e.preventDefault();
+
+    var phoneNumbers = [];
+    var modal = $("#referFriendModal");
+    $("#referFriendModal .phone-number input").each(function (e) {
+      if ($(this).val()) {
+        phoneNumbers.push($(this).val());
+      }
+    });
+    if (phoneNumbers.length === 0) {
+      modal.find(".invalid-feedback").show();
+    } else {
+      modal.find(".invalid-feedback").hide();
+      var payloadData = {
+        smsId: $("#send-sms").data("sms-id"),
+        phoneNumbers: phoneNumbers,
+      };
+      $.ajax({
+        url: "/api/notify/getphonenumbers",
+        dataType: "json",
+        type: "post",
+        contentType: "application/json",
+        data: JSON.stringify(payloadData),
+        beforeSend: function () {
+          modal.find("input").val("");
+          modal.modal("hide");
+          // show loading status
+          $("#statusModal").modal("show");
+        },
+        success: function (data, textStatus, jQxhr) {
+          var res = data;
+          if (res) {
+            modal = $("#statusModal");
+            modal.removeClass("loading-modal").addClass("statusModal");
+            var modalContent = modal.find(".modal-content");
+            modalContent.html("");
+            var count = res.Total;
+            if (res.Status == "200") {
+              modalContent.append(
+                '<div class="modal-header"><span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Close</span></div><div class="modal-body"><i class="ri-checkbox-circle-fill"></i><h3 class="card-title">Success!</h3><div class="desc">Your referral code has been sent successfully.</div></div>'
+              );
+            } else {
+              if (res.FailedNumbers.length == count) {
+                // all sms are failed sending
+                modalContent.append(
+                  '<div class="modal-header"><span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Close</span></div><div class="modal-body"><i class="ri-close-circle-fill"></i><h3 class="card-title">Messages failed to sent!</h3><div class="desc">Sorry, your messages have not been sent. Please refresh your page and try again.</div></div>'
+                );
+              } else {
+                // some sms failed sending , the other is sent successfully
+                var failedCount = res.FailedNumbers.length;
+                var failedNumbers = "+65 " + res.FailedNumbers[0];
+                if (res.FailedNumbers.length == 2) {
+                  failedNumbers =
+                    failedNumbers + " and +65 " + res.FailedNumbers[1];
+                }
+                var textFailed =
+                  res.FailedNumbers.length == 1 ? " has " : " have ";
+                modalContent.append(
+                  '<div class="modal-header"><span type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Close</span></div><div class="modal-body"><i class="ri-close-circle-fill"></i><h3 class="card-title">' +
+                    failedCount +
+                    " out of " +
+                    count +
+                    ' message failed to sent!</h3><div class="desc">Sorry, your message to ' +
+                    failedNumbers +
+                    textFailed +
+                    "not been sent. Please refresh your page and try again.</div></div>"
+                );
+              }
+            }
+          }
+        },
+        error: function (jqXhr, textStatus, errorThrown) {
+          console.log(errorThrown);
+        },
+      });
+    }
+  });
+})(jQuery, window);
+
+// All Programme page and Pagination JS END
+
+function CopyToClipboard(id) {
+  var r = document.createRange();
+  r.selectNode(document.getElementById(id));
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(r);
+  document.execCommand("copy");
+  window.getSelection().removeAllRanges();
+}
+
+// Singal News page carousel
+$(function () {
+  var $slider = $("#singleNewsCarousel");
+  if (!$slider) return;
+  $slider.carousel();
+});
+
+// For UFSE build your profile
+// Change all to uppercase
+$(document).ready(function () {
+  $(".NRIC-Field").on("input", function () {
+    $(this).val($(this).val().toUpperCase());
+  });
+});
+
+// For UFSE build your profile submit button
+// Show loading gif and text if there's no error
+// Hide the sign up rounded tag at the top of the page as well
+$(".frmbtn").click(function () {
+  setTimeout(function () {
+    if ($(".input-validation-error").length === 0) {
+      $(".txtLoader").removeClass("d-none");
+      $(".txtLoadertxt").removeClass("d-none");
+      $(".sign-up-tag").addClass("d-none");
+    }
+  }, 1);
+});
+
+// Function to toggle visibility based on the selected category value
+function toggleCategoryVisibility(categoryValue, selectElement) {
+  selectElement.find("option").each(function (index, element) {
+    if (!element.hasAttribute("data-custom-attribute")) {
+      selectElement.val(element);
+    }
+
+    var isVisible =
+      element.getAttribute("data-custom-attribute") === categoryValue;
+    $(element).toggleClass("d-none", !isVisible);
+    if (isVisible) {
+      $(element).attr("hidden");
+    } else {
+      $(element).removeAttr("hidden");
+    }
+  });
+}
+
+// Function to handle radio button change and toggle visibility
+function handleRadioButtonChange(radioGroupName, selectElementId) {
+  $("input[type=radio][data-sc-field-name=" + radioGroupName + "]").change(
+    function () {
+      var selectedValue = this.value;
+      var selectElement = $(
+        "select[data-sc-field-name=" + selectElementId + "]"
+      );
+      toggleCategoryVisibility(selectedValue, selectElement);
+    }
+  );
+}
+
+// Function to initialize visibility based on default values
+function initializeVisibility(radioGroupName, selectElementId) {
+  var selectedValue = $(
+    "input[type=radio][data-sc-field-name=" + radioGroupName + "]:checked"
+  ).val();
+  var selectElement = $("select[data-sc-field-name=" + selectElementId + "]");
+  toggleCategoryVisibility(selectedValue, selectElement);
+}
+
+// Coveo autofocus function
+function handleAutoFocus() {
+  const dropdownToggle1 = document.getElementById("search-group-mobile"); // mobile
+  const dropdownToggle2 = document.getElementById("search-group-desktop"); // desktop
+
+  dropdownToggle1?.addEventListener("click", function () {
+    setTimeout(() => {
+      const shadowRoot =
+        document.querySelector("#nav-search-mobile").shadowRoot;
+      let inputElem = shadowRoot.querySelector("input"); // Access the input element within the shadow DOM
+      inputElem.focus();
+    }, 0);
+  });
+
+  dropdownToggle2?.addEventListener("click", function () {
+    setTimeout(() => {
+      const shadowRoot = document.querySelector(
+        "#nav-search-desktop"
+      ).shadowRoot;
+      let inputElem = shadowRoot.querySelector("input"); // Access the input element within the shadow DOM
+      inputElem.focus();
+    }, 0);
+  });
+}
+
+// Handle radio button changes and initialize visibility on document ready
+$(document).ready(function () {
+  handleRadioButtonChange("ExpertiseCategory", "Expertise");
+  handleRadioButtonChange("CategoryBelong", "AddtionalExpertise");
+  initializeVisibility("ExpertiseCategory", "Expertise");
+  initializeVisibility("CategoryBelong", "AddtionalExpertise");
+  handleAutoFocus();
+});

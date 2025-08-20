@@ -1,0 +1,4097 @@
+// Pagination JS
+
+$(function () {
+  const calculatePagesCount = (pageSize, totalCount) => {
+    return totalCount < pageSize ? 1 : Math.ceil(totalCount / pageSize);
+  };
+
+  var pagination = $("#pagination-container"),
+    totalRecords = $("#list-section").attr("data-records"),
+    pageType = $("#list-section").attr("data-pagetype"),
+    results = 10;
+  if ($("#page-count-dropdown .dropdown-item.active").length > 0) {
+    results = $("#page-count-dropdown .dropdown-item.active").data("value");
+  }
+  (recPerPage = totalRecords < results ? totalRecords : results),
+    (page = 1),
+    (visiblePages = 5),
+    (totalPages =
+      totalRecords > 0 ? calculatePagesCount(recPerPage, totalRecords) : 0);
+  var sortorder = $("#page-sorting-dropdown .dropdown-item.active").data(
+    "value"
+  );
+
+  var api = {
+    Programmes: "/api/programmes/getprogrammes",
+    News: "/api/news/getNews",
+    NewsCollection: "/api/newscollection/GetNewsCollectionWithFilter",
+    RelevantArticlesForCollection:
+      "/api/newscollection/GetRelevantArticlesForCollectionFilter",
+    Events: "/api/events/GetEvents",
+    Publications: "/api/publications/getPublications",
+    MediaGallery: "/api/MediaGallery/getMediaGalleryList",
+    MediaMaterial: "/api/MediaMaterial/getmediaMaterial",
+    Videos: "/api/resourcegridapi/getallvideos",
+    SingleGallery: "/api/MediaGallery/SingleGallery",
+    Blogs: "/api/resourcegridapi/getallblogs",
+    Guides: "/api/resourcegridapi/getallguides",
+    OurPrinciples: "/api/ourpeoplegridapi/getallpeopleusingprinciple",
+    Stories: "/api/storiesgrid/getallstories",
+    Reports: "/api/ReportsAndJournals/GetAllReportsFiltered",
+    Journals: "/api/ReportsAndJournals/GetAllJournalsFiltered",
+    Deals: "/api/dealsgrid/getalldeals",
+    CaseStudy: "/api/CaseStudy/GetAllCaseStudy",
+    Testimonials: "/api/PageContent/GetAllTestimonials",
+    quiz: "/api/quiz/CaptureQuizResponse",
+    Professionals: "/api/Profiles/GetAllProfile",
+  };
+
+  var dummyData = {
+    total: 27,
+    type: "Programmes",
+    results: [
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Career-Coaching",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Company-Training-Committees",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+      {
+        title: "",
+        description: "",
+        url: "https://mccfl0eprmdb46dmk92-cm.managedcloud.sitecore.com/Programmes/Enhanced-NTUC-Care-Fund-Covid-19",
+        buttonText: "",
+        image: null,
+      },
+    ],
+  };
+  var dummyDataNews = {
+    total: 3,
+    type: "News",
+    "data-newstype": "306b8a6d0088496493c118102461d5ef",
+    results: [
+      {
+        title: "Union of security employees",
+        description: null,
+        url: "/News/Union of security employees/",
+        buttonText: null,
+        image:
+          "https://alep-p-001-delivery.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=3a51f05a",
+        imagetext: null,
+        custom: [
+          { Key: "topic", Value: "Cost Of Living" },
+          { Key: "publishedDate", Value: "15 Jan" },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title:
+          "Singaporeâ€™s economic outlook 2022: PM Lee remains cautiously optimistic",
+        description: null,
+        url: "/News/Union of security employees/",
+        buttonText: null,
+        image:
+          "https://alep-p-001-delivery.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=3a51f05a",
+        imagetext: null,
+        custom: [
+          { Key: "topic", Value: "Cost Of Living" },
+          { Key: "publishedDate", Value: "16 Jan" },
+        ],
+        Id: "00000000-0000-0000-0000-000000000010",
+      },
+      {
+        title:
+          "Labour market advance release: total employment sees substantial growth in 4Q2021",
+        description: null,
+        url: "/News/Union of security employees/",
+        buttonText: null,
+        image: "",
+        imagetext: null,
+        custom: [
+          { Key: "topic", Value: "Cost Of Living" },
+          { Key: "publishedDate", Value: "21 Jan" },
+        ],
+        Id: "00000000-0000-0000-0000-000000000010",
+      },
+    ],
+    Id: "d78390b3-dff8-467e-9f14-f3e316c31e9c",
+  };
+  var dummyDataCollections = {
+    total: 11,
+    type: "NewsCollection",
+    results: [
+      {
+        title: "Sri News 02",
+        description: "this is 2nd item",
+        url: "/News/Sri News 2/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "18",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 01",
+        description: "Supporting workers shifting careers text text",
+        url: "https://ntucsc.dev.local/News/Sri News 1/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=e2ed8f10",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 03",
+        description: "text text",
+        url: "/News/Sri News 3/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 02",
+        description: null,
+        url: "/News/Sri News 2/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "18",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 01",
+        description: "Supporting workers shifting careers text text",
+        url: "https://ntucsc.dev.local/News/Sri News 1/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=e2ed8f10",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 03",
+        description: "text text",
+        url: "/News/Sri News 3/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 02",
+        description: null,
+        url: "/News/Sri News 2/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "18",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 01",
+        description: "Supporting workers shifting careers text text",
+        url: "https://ntucsc.dev.local/News/Sri News 1/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=e2ed8f10",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 04",
+        description: "abc",
+        url: "/News/Sri News 4/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "4",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title:
+          "Union of security employees: give security officers the respect and dignity they deserve.",
+        description: "text text",
+        url: "https://ntucsc.dev.local/News/Union of security employees/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "14",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 06",
+        description: "Supporting workers shifting careers",
+        url: "https://ntucsc.dev.local/News/Sri News 6/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        custom: [
+          {
+            Key: "RelatedArticles",
+            Value: "10",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+    ],
+    PinnedArticle: {
+      title: "Sri News 03 Banner",
+      description: "text text banner banner",
+      url: "/News/Sri News 3/",
+      buttonText: null,
+      image:
+        "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+      imagetext: null,
+      custom: [
+        {
+          Key: "RelatedArticles",
+          Value: "4",
+        },
+      ],
+      Id: "00000000-0000-0000-0000-000000000000",
+    },
+    Id: "4c206feb-a483-4c5a-bba3-580fcb5607a2",
+  };
+  var dummyDataRelevantArticlesForCollection = {
+    total: 2,
+    type: "RelevantArticlesForCollection",
+    results: [
+      {
+        title: "Sri News 09",
+        description: null,
+        url: "https://dev.aleph-labs.com/clients/ntuc-portal/templates/collection-articles.html",
+        buttonText: null,
+        image:
+          "https://dev.aleph-labs.com/clients/ntuc-portal/assets/images/upload/news-small2.png",
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "topic",
+            Value: "Protect your work right",
+          },
+          {
+            Key: "publishedDate",
+            Value: "08 Jul",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 07",
+        description: null,
+        url: "/News/Sri News 7/?isSerp=true",
+        buttonText: null,
+        image: "",
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "topic",
+            Value: "Protect your work right",
+          },
+          {
+            Key: "publishedDate",
+            Value: "22 Dec 2021",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+    ],
+    PinnedArticle: null,
+    Id: "092c0ea2-6816-44fb-8928-b1f0ea7eee5c",
+  };
+  var dummyDataPublications = {
+    total: 10,
+    type: "Publications",
+    results: [
+      {
+        title: "Sri News 03",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "https://ntucsc.dev.local/News/Sri News 3/",
+        buttonText: null,
+        image: null,
+        imagetext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Books",
+          },
+          {
+            Key: "publishedDate",
+            Value: "10 Jun",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 02",
+        description:
+          "Non-corporate news. Protect your work rights. FSE and young workers.",
+        url: "https://ntucsc.dev.local/News/Sri News 2/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        imagetext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Citation",
+          },
+          {
+            Key: "publishedDate",
+            Value: "09 Jun",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 01",
+        description:
+          "This is Sri News card description. æ— åŒ -  æ‘©ç™»å…„å¼Ÿåˆ˜å®‡å®  ç”µè§†å‰§ã€Šä¸”è¯•å¤©ä¸‹ã€‹ä¸»é¢˜æ›². Let us see how this will be displayed. Updated.",
+        url: "/News/Sri News 1/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/de16ff2e67bd4f45b83e99eb8347b881?v=e2ed8f10",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Citation",
+          },
+          {
+            Key: "publishedDate",
+            Value: "13 May",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 05",
+        description:
+          "Non-corporate, Workplace safety and health, Migrant and lower-wage workers",
+        url: "/News/Sri News 5/",
+        buttonText: null,
+        image: "-/media/Default-Website/cover.jpg",
+        imagetext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Citation",
+          },
+          {
+            Key: "publishedDate",
+            Value: "06 May",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 04",
+        description: "Corporate, Training, Partners and SME",
+        url: "https://ntucsc.dev.local/News/Sri News 4/",
+        buttonText: null,
+        image: null,
+        imagetext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Books",
+          },
+          {
+            Key: "publishedDate",
+            Value: "01 May",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 07",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "https://ntucsc.dev.local/News/Sri News 8/",
+        buttonText: null,
+        image: "-/media/System/Email/SampleNewsletter/lion.png",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "",
+          },
+          {
+            Key: "publishedDate",
+            Value: "14 Feb",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title:
+          "Union of security employees: give security officers the respect and dignity they deserve.",
+        description:
+          "\n              The public must accord security officers with respect and dignity while they carry out their duties, urged\n              Union of Security Employees (USE) General Secretary Raymond Chin.\n            \n            ",
+        url: "/News/Union of security employees/",
+        buttonText: null,
+        image: "-/media/Images/article.png",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "NTUC This Week",
+          },
+          {
+            Key: "publishedDate",
+            Value: "16 Jan",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 07",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "https://ntucsc.dev.local/News/Sri News 7/",
+        buttonText: null,
+        image: "-/media/Feature/AboutUS/Our-Centres/NTUC-map-photo-1.png",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "",
+          },
+          {
+            Key: "publishedDate",
+            Value: "22 Dec 2021",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 06",
+        description: "Non-corporate. Cost of living. Partners and SMEs",
+        url: "/News/Sri News 6/",
+        buttonText: null,
+        image: "-/media/Feature/News/collection-visual-banner.png",
+        imagetext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "NTUC This Week",
+          },
+          {
+            Key: "publishedDate",
+            Value: "03 Nov 2021",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: null,
+        description: null,
+        url: null,
+        buttonText: null,
+        image: null,
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "",
+          },
+          {
+            Key: "publishedDate",
+            Value: "01 Jan 0001",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+    ],
+    PinnedArticle: null,
+    Id: "a1e26a44-4001-4ece-bff4-914c653e97b1",
+  };
+  var dummyDataMediaGallery = {
+    total: 5,
+    type: "MediaGallery",
+    results: [
+      {
+        title: "Gallery 1",
+        description: null,
+        url: "/uportal/gallery/gallery-1",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/3e2ebfbe87f748aba3eb68fd95ca6a61?v=830704c3",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "photos",
+            Value: 4,
+          },
+          {
+            Key: "videos",
+            Value: 0,
+          },
+          {
+            Key: "ExternalLinkUrl",
+            Value: "",
+          },
+          {
+            Key: "ExternalLinkTarget",
+            Value: "",
+          },
+        ],
+        Id: "2c747775-5257-4f66-8b6b-0289e237051f",
+      },
+      {
+        title: "Gallery 3",
+        description: null,
+        url: "/uportal/gallery/gallery-3",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/e8a15efb5c3e49cf946633cb9d99edd4?v=9ad2ecf0",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "photos",
+            Value: 21,
+          },
+          {
+            Key: "videos",
+            Value: 1,
+          },
+          {
+            Key: "ExternalLinkUrl",
+            Value: "",
+          },
+          {
+            Key: "ExternalLinkTarget",
+            Value: "",
+          },
+        ],
+        Id: "71eaa6e0-ffff-4d3f-bd70-7fcb0cb59362",
+      },
+      {
+        title: "Gallery 4",
+        description: null,
+        url: "/uportal/gallery/gallery-4",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/17a996c002bf4512b990775866c1f22f?v=ee2b25a2",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "photos",
+            Value: 11,
+          },
+          {
+            Key: "videos",
+            Value: 1,
+          },
+          {
+            Key: "ExternalLinkUrl",
+            Value: "http://www.google.com",
+          },
+          {
+            Key: "ExternalLinkTarget",
+            Value: "_blank",
+          },
+        ],
+        Id: "3708f2c4-cee6-4bdd-a374-888906f279cc",
+      },
+      {
+        title: "Gallery 2",
+        description: null,
+        url: "/uportal/gallery/gallery-2",
+        buttonText: null,
+        image: "-/media/images/banner-2.ashx",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "photos",
+            Value: 7,
+          },
+          {
+            Key: "videos",
+            Value: 1,
+          },
+          {
+            Key: "ExternalLinkUrl",
+            Value: "",
+          },
+          {
+            Key: "ExternalLinkTarget",
+            Value: "",
+          },
+        ],
+        Id: "d7b89755-7bc7-4e37-8fe9-ff9236ac91b8",
+      },
+      {
+        title: "Gallery Page",
+        description: null,
+        url: "/uportal/gallery/gallery-page",
+        buttonText: null,
+        image: "-/media/images/banner-2.ashx",
+        imagetext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "photos",
+            Value: 7,
+          },
+          {
+            Key: "videos",
+            Value: 1,
+          },
+          {
+            Key: "ExternalLinkUrl",
+            Value: "/uportal/",
+          },
+          {
+            Key: "ExternalLinkTarget",
+            Value: "_blank",
+          },
+        ],
+        Id: "b40db9bf-7d94-4d8f-a5f4-434cbf93874d",
+      },
+    ],
+    PinnedArticle: null,
+    Id: "f3f3b81f-ef68-4150-a1e5-2b5d67d6fdd7",
+  };
+  var dummyDataSingleGallery = {
+    total: 3,
+    type: "SingleGallery",
+    results: [
+      {
+        title: "The entity definition for this entity",
+        description: null,
+        url: "https://akns-images.eonline.com/eol_images/Entire_Site/20171018/rs_634x1024-171118132453-1024-2017-miss-world-miss-china.jpg?fit=around%7C634:1024&output-quality=90&crop=634:1024;center,top",
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "IsVideo",
+            Value: false,
+          },
+          {
+            Key: "VideoLink",
+            Value: "",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "The entity definition for this entity",
+        description: null,
+        url: "https://www.gardendesign.com/pictures/images/675x529Max/site_3/helianthus-yellow-flower-pixabay_11863.jpg",
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "IsVideo",
+            Value: false,
+          },
+          {
+            Key: "VideoLink",
+            Value: "",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "The entity definition for this entity",
+        description: null,
+        url: null,
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "IsVideo",
+            Value: true,
+          },
+          {
+            Key: "VideoLink",
+            Value:
+              "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/8c2b77234c474f5993d4f024c543cb4d?v=5f7394f9",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "The entity definition for this entity",
+        description: null,
+        url: "https://r4.wallpaperflare.com/wallpaper/800/61/157/actors-keanu-reeves-wallpaper-thumb.jpg",
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "IsVideo",
+            Value: true,
+          },
+          {
+            Key: "VideoLink",
+            Value: "https://www.youtube.com/embed/yjRHZEUamCc",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+    ],
+    PinnedArticle: null,
+    Id: "0d2b3544-8724-470b-aebc-2cae767b1b79",
+  };
+  var dummyDataMediaMaterial = {
+    total: 6,
+    type: "MediaMaterial",
+    results: [
+      {
+        title: "Non-corporate, Protect your work rights, All audience",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "https://ntucsc.dev.local/News/Sri News 3/",
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Books",
+          },
+          {
+            Key: "publishedDate",
+            Value: "10 Jun",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 02",
+        description:
+          "Non-corporate news. Protect your work rights. FSE and young workers.",
+        url: "https://ntucsc.dev.local/News/Sri News 2/",
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f1e94b4dbf084802b3be6dad05bd0bf8?v=d7132f2b",
+        alttext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Citation",
+          },
+          {
+            Key: "publishedDate",
+            Value: "09 Jun",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 04",
+        description: "Corporate, Training, Partners and SME",
+        url: "https://ntucsc.dev.local/News/Sri News 4/",
+        buttonText: null,
+        image: null,
+        alttext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "Books",
+          },
+          {
+            Key: "publishedDate",
+            Value: "01 May",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 07",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "https://ntucsc.dev.local/News/Sri News 8/",
+        buttonText: null,
+        image: "-/media/System/Email/SampleNewsletter/lion.png",
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "",
+          },
+          {
+            Key: "publishedDate",
+            Value: "14 Feb",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 07",
+        description: "Non-corporate, Protect your work rights, All audience",
+        url: "/News/Sri News 7/",
+        buttonText: null,
+        image: "-/media/Feature/AboutUS/Our-Centres/NTUC-map-photo-1.png",
+        alttext: null,
+        isPinned: false,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "",
+          },
+          {
+            Key: "publishedDate",
+            Value: "22 Dec 2021",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+      {
+        title: "Sri News 06",
+        description: "Non-corporate. Cost of living. Partners and SMEs",
+        url: "/News/Sri News 6/",
+        buttonText: null,
+        image: "-/media/Feature/News/collection-visual-banner.png",
+        alttext: null,
+        isPinned: true,
+        custom: [
+          {
+            Key: "Publication",
+            Value: "NTUC This Week",
+          },
+          {
+            Key: "publishedDate",
+            Value: "03 Nov 2021",
+          },
+        ],
+        Id: "00000000-0000-0000-0000-000000000000",
+      },
+    ],
+    PinnedArticle: null,
+    Id: "4b96addb-d60f-42db-87ad-6ae2cbc4e61d",
+  };
+  var dummyDataVideo = {
+    total: 7,
+    type: "Videos",
+    results: [
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1 Video title Test1 ",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Video title Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+    ],
+    Id: "2D3B2AA1-C5C8-477C-A1B6-F83A3F3045E8",
+  };
+  var dummyDataBlogs = {
+    total: 1,
+    type: "Blogs",
+    results: [
+      {
+        Title: "Test1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+    ],
+    Id: "2D3B2AA1-C5C8-477C-A1B6-F83A3F3045E8",
+  };
+  var dummyDataGuides = {
+    total: 15,
+    type: "Guides",
+    results: [
+      {
+        Title: "Test Video 1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 2",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 3",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 4",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 5",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 2",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 3",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 4",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 5",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 1",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 2",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 3",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Video 4",
+        Description: "Hi",
+        Image: null,
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "VideoPage",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+      {
+        Title: "Test Blog 5",
+        Description: "Hi",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "https://xp1011adminsc.dev.local/Membership/Resources-for-members/Test1/",
+        PublishedDate: "30 Jun",
+        TemplateName: "OurBlog",
+        Id: "18dce17e-5f5c-4cc7-b553-95d85a861e57",
+      },
+    ],
+    Id: "2D3B2AA1-C5C8-477C-A1B6-F83A3F3045E8",
+  };
+  var dummyDataReports = {
+    total: 4,
+    type: "Reports",
+    results: [
+      {
+        title: "Workers in transition",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/58230cb66c7b4306aaabaff7d2e4982f?v=251b9ed2",
+        alttext: null,
+        custom: [
+          {
+            Key: "Infographics",
+            Value: 0,
+          },
+        ],
+        Id: "4da43b3e-ffcd-4889-931c-df9fa51056de",
+      },
+      {
+        title: "Upskilling of mature workers",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/58230cb66c7b4306aaabaff7d2e4982f?v=251b9ed2",
+        alttext: null,
+        custom: [
+          {
+            Key: "Infographic",
+            Value: 1,
+          },
+        ],
+        Id: "0a64abfe-ee26-4157-bb05-e5861ab28d93",
+      },
+      {
+        title: "Upskilling of mature worker 2",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/31a7942165854e19bf2ddee34d01eb95?v=688bff99",
+        alttext: null,
+        custom: [
+          {
+            Key: "Infographics",
+            Value: 4,
+          },
+        ],
+        Id: "5996fea0-86f5-47c1-ac36-681f18f7b0ac",
+      },
+      {
+        title: "Upskilling of mature workers 3",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/58230cb66c7b4306aaabaff7d2e4982f?v=251b9ed2",
+        alttext: null,
+        custom: [
+          {
+            Key: "Infographics",
+            Value: 4,
+          },
+        ],
+        Id: "5fe8f672-dfba-4491-814a-e2022f03261f",
+      },
+    ],
+    Id: "94617575-a412-4a45-9c6f-12909e73fd8f",
+  };
+  var dummyDataJournals = {
+    total: 4,
+    type: "Journals",
+    results: [
+      {
+        title: "Singapore Labour Journal1",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f0485a7ebe3d44b6b42f1c22298b38b8?v=3e525ecb",
+        alttext: null,
+        custom: [
+          {
+            Key: "JournalDocumentSize",
+            Value: "127 KB|IMAGE",
+          },
+          {
+            Key: "JournalDocument",
+            Value:
+              "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/ae59fb9612b74f098009180b688271a4?v=d089a954&download=true",
+          },
+        ],
+        Id: "9f49e07e-771f-4fa6-99d3-e7732f866d1a",
+      },
+      {
+        title: "Singapore Labour Journal2",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f0485a7ebe3d44b6b42f1c22298b38b8?v=3e525ecb",
+        alttext: null,
+        custom: [
+          {
+            Key: "JournalDocumentSize",
+            Value: "127 KB|PDF",
+          },
+          {
+            Key: "JournalDocument",
+            Value:
+              "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/ae59fb9612b74f098009180b688271a4?v=d089a954&download=true",
+          },
+        ],
+        Id: "c36fa51d-97cd-41cb-aa02-290a06a738d2",
+      },
+      {
+        title: "Singapore Labour Journal3",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/f0485a7ebe3d44b6b42f1c22298b38b8?v=3e525ecb",
+        alttext: null,
+        custom: [
+          {
+            Key: "JournalDocumentSize",
+            Value: "127 KB|PDF",
+          },
+          {
+            Key: "JournalDocument",
+            Value:
+              "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/ae59fb9612b74f098009180b688271a4?v=d089a954&download=true",
+          },
+        ],
+        Id: "c1cf4f5f-dbd5-4a5e-b957-6354791880ee",
+      },
+      {
+        title: "Singapore Labour Journal",
+        description:
+          "A one-stop source for information on labour provisions in more than 100 regional trade agreements in over 140 economies.",
+        url: null,
+        buttonText: null,
+        image:
+          "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/3953b54a7b824089a1becfadcd63e9bb?v=2565c262",
+        alttext: null,
+        custom: [
+          {
+            Key: "JournalDocumentSize",
+            Value: "3 MB|IMAGE",
+          },
+          {
+            Key: "JournalDocument",
+            Value:
+              "https://alep-p-001.sitecorecontenthub.cloud/api/public/content/38316f5930714e6cbcb8c5d76502f43d?v=02b073e6&download=true",
+          },
+        ],
+        Id: "90124730-6185-4f28-9f6e-0398361de370",
+      },
+    ],
+    Id: "8da7eaed-00d1-4953-82cc-15e9694e9bf5",
+  };
+  var dummyDataStoris = {
+    total: 4,
+    type: "Stories",
+    results: [
+      {
+        Title: "OurStory ArticlePage1",
+        Description:
+          "In 1855, the jeweller Joseph Resch, who had arrived from Vienna in 1837, had a house built in the heart of Bucharest.",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "http://127.0.0.1/All-Stories/OurStory/2022/07/27/03/36/OurStory-ArticlePage1",
+        PublishedDate: "27 Jul",
+        TemplateName: "OurStory",
+        Id: "d836b51f-b624-46f4-8c70-5d9aa6fbbd7f",
+      },
+      {
+        Title: "OurStory VideoPage1",
+        Description: "Welcome to NTUC OurStory VideoPage",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "/All-Stories/OurStory-VideoPage/2022/07/26/03/48/OurStory-VideoPage1",
+        PublishedDate: "26 Jul",
+        TemplateName: "OurStory VideoPage",
+        Id: "822783fd-b497-444a-b4c3-35b963bb6baa",
+      },
+      {
+        Title: "OurStory ArticlePage1",
+        Description:
+          "In 1855, the jeweller Joseph Resch, who had arrived from Vienna in 1837, had a house built in the heart of Bucharest.",
+        Image: "",
+        Url: "http://127.0.0.1/All-Stories/OurStory/2022/07/27/03/36/OurStory-ArticlePage1",
+        PublishedDate: "27 Jul",
+        TemplateName: "OurStory",
+        Id: "d836b51f-b624-46f4-8c70-5d9aa6fbbd7f",
+      },
+      {
+        Title: "OurStory VideoPage1",
+        Description: "Welcome to NTUC OurStory VideoPage",
+        Image: "https://i.ytimg.com/vi/cqVJW5c-rmI/hqdefault.jpg",
+        Url: "/All-Stories/OurStory-VideoPage/2022/07/26/03/48/OurStory-VideoPage1",
+        PublishedDate: "26 Jul",
+        TemplateName: "OurStory VideoPage",
+        Id: "822783fd-b497-444a-b4c3-35b963bb6baa",
+      },
+    ],
+  };
+  var dummyDataDeals = {
+    total: 2,
+    type: "Deals",
+    results: [
+      {
+        Title: "Our Music",
+        Description: "$5 off per pax on the standard price",
+        Image: "-/media/Images/article.png",
+        PromotionImage: "-/media/Images/article.png",
+        PromotionMessage: "Redeem a free yoga mat",
+        Url: "/Membership/Deals-for-members/Our Music/",
+        CreatedDate: null,
+        TemplateName: "Deals Page",
+        Category: ["Health & Wellness", "NTUC Social Enterprises"],
+        Labels: [
+          {
+            Text: "Popular this month",
+            Style: "teal",
+          },
+          {
+            Text: "Expiring soon!",
+            Style: "pink",
+          },
+        ],
+
+        Id: "230208c9-262c-42e6-8d8e-ed7a305585ce",
+      },
+      {
+        Title: "Trapped escape room",
+        Description: "$5 off per pax on the standard price",
+        Image: "-/media/Images/article.png",
+        PromotionImage: "-/media/Images/article.png",
+        PromotionMessage: "",
+        Url: "/Membership/Deals-for-members/Our Music Studio/",
+        CreatedDate: null,
+        TemplateName: "Deals Page",
+        Category: ["Hotel & Travel"],
+        Label: [
+          {
+            Text: "Popular this month",
+            Style: "teal",
+          },
+        ],
+
+        Id: "230208c9-262c-42e6-8d8e-ed7a305585ce",
+      },
+    ],
+    Id: "9823D93F-5C02-4E42-BC13-FE292C00E6FD",
+  };
+
+  // Render cards
+  var renderCards = (records, pageType, page) => {
+    if (pageType == "Professionals") {
+      $("#list-section .row").html("");
+      const filterSection = document.getElementById("showInstitute");
+      // Get the value of the data attribute
+      const showInstitute = filterSection.getAttribute("data");
+
+      for (var i = 0; i < records.results.length; i++) {
+        var expertiseArray = records.results[i].experties.split("|");
+
+        var expertiseHTML = "";
+        if (!records.results[i].experties.length == 0) {
+          for (var j = 0; j < expertiseArray.length; j++) {
+            expertiseHTML +=
+              "<div class='rounded-tag'><p class='tag-label'>" +
+              expertiseArray[j] +
+              "</p></div>";
+          }
+        }
+        var rate = records.results[i].rate;
+        var rateStr = "";
+        if (rate === null || rate === "" || rate === "0") {
+          rateStr = "Contact professional";
+        } else {
+          rateStr = records.results[i].rate;
+        }
+        var accreditationHTML = "";
+        var accreditationTxt = records.results[i].accreditation.trim();
+        if (accreditationTxt.length !== 0) {
+          accreditationHTML =
+            "<div class='certified-tag'> <i class='ri-medal-line certified-icon'></i><p class='certified-label'>" +
+            accreditationTxt +
+            "</p></div>";
+        }
+
+        if (showInstitute === "true") {
+          var bottomDiv = "";
+          if (records.results[i].institution != "") {
+            bottomDiv =
+              "<div class='bottom'>" +
+              "<div class='stats' style='width: max-content;'><p class='bottom-title'>" +
+              "Institution" +
+              "</p><p class='bottom-description'>" +
+              records.results[i].institution +
+              "</p></div>" +
+              "<div class='stats' style='width: max-content;'></div></div></div></div></a></div>";
+          }
+
+          var div =
+            "<div class='col-sm-6'><a href='" +
+            records.results[i].url +
+            "' class='professional-card-link'>" +
+            "<div class='professional-card'> <div class='image-container'> <img src='" +
+            records.results[i].profilephoto +
+            "' height='233' width='100%' class='image-fit'/>" +
+            accreditationHTML +
+            "</div><div class='content-container'><div class='upper'><div class='tag-container'>" +
+            expertiseHTML +
+            "</div> <p class='title'>" +
+            records.results[i].name +
+            "</p><p class='description'>" +
+            records.results[i].shortDescription +
+            " </p></div>" +
+            bottomDiv;
+
+          $("#list-section .row").append(div);
+        } else {
+          var div =
+            "<div class='col-sm-6'><a href='" +
+            records.results[i].url +
+            "' class='professional-card-link'>" +
+            "<div class='professional-card'> <div class='image-container'> <img src='" +
+            records.results[i].profilephoto +
+            "' height='233' width='100%' class='image-fit'/>" +
+            accreditationHTML +
+            "</div><div class='content-container'><div class='upper'><div class='tag-container'>" +
+            expertiseHTML +
+            "</div> <p class='title'>" +
+            records.results[i].name +
+            "</p><p class='description'>" +
+            records.results[i].shortDescription +
+            " </p></div><div class='bottom'><div class='stats'><p class='bottom-title'>Experience</p><p class='bottom-description'>" +
+            records.results[i].experience +
+            " years</p></div><div class='stats'><p class='bottom-title'>Rate</p><p class='bottom-description'>" +
+            rateStr +
+            "</p></div></div></div></div></a></div>";
+
+          $("#list-section .row").append(div);
+        }
+      }
+    }
+    if (pageType == "Programmes") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var div =
+          "<div class='col-sm-6'><a class='card-default programme' href='" +
+          records.results[i].url +
+          "'><div class='card-content'><div class='upper-part'><h3 class='card-title'>" +
+          records.results[i].title +
+          "</h3><div class='desc'>" +
+          records.results[i].description +
+          "</div></div><div class='lower-part'><span class='link-default'>" +
+          records.results[i].buttonText +
+          "</span></div></div></a></div>";
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "CaseStudy") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var div =
+          "<div class='col-sm-6'> <a class='card-default event' href='" +
+          records.results[i].url +
+          "'> <div class='image-wrapper'> <img src='" +
+          records.results[i].image +
+          "' alt='" +
+          records.results[i].imagetext +
+          "'/></div><div class='card-content'><div class='upper-part'><h3 class='card-title'>" +
+          records.results[i].title +
+          "</h3><div class='desc'>" +
+          records.results[i].title +
+          "</div></div></div></a></div>";
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Testimonials") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var div =
+          "<div class='content-container'><img class='logo-container' src='" +
+          records.results[i].image +
+          "' height='100' width='100' /><div><h4 class='title'>" +
+          records.results[i].title +
+          "</h4><p class='desc'>" +
+          records.results[i].description +
+          "<br></br></p> <div class='extra-spacing'> </div><div>" +
+          records.results[i].buttonText +
+          "</div> </div></div>";
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "News") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+          records.results[i].url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].custom[1]["Value"] +
+          "</span><span class='card-label grey'>" +
+          records.results[i].custom[0]["Value"] +
+          "</span></div><div class='card-title'>" +
+          records.results[i].title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Events") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var labelsHTML = "";
+        for (var j = 0; j < records.results[i].custom[1]["Value"].length; j++) {
+          labelsHTML +=
+            "<span class='card-label " +
+            records.results[i].custom[1]["Value"][j].Style +
+            "'>" +
+            records.results[i].custom[1]["Value"][j].Text +
+            "</span>";
+        }
+        var div =
+          "<div class='col-sm-6'><a class='card-default event' href='" +
+          records.results[i].url +
+          "'> <div class='image-wrapper'> <img src='" +
+          records.results[i].image +
+          "' alt='" +
+          records.results[i].imagetext +
+          "'> </div><div class='card-content'> <div class='upper-part'> <div class='icon-text'> <i class='ri-calendar-event-line'></i> <span class='text'>" +
+          records.results[i].custom[0]["Value"] +
+          "</span> </div><h3 class='card-title'>" +
+          records.results[i].title +
+          "</h3> <div class='desc'>" +
+          records.results[i].description +
+          "</div></div><div class='lower-part'>" +
+          labelsHTML +
+          "</div></div></a></div>";
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "NewsCollection") {
+      $("#list-section").html("");
+      if (page == 1 && records.PinnedArticle) {
+        var image0HTML = records.PinnedArticle.image
+          ? "<div class='image'><img src='" +
+            records.PinnedArticle.image +
+            "' alt='" +
+            records.PinnedArticle.imagetext +
+            "'/></div>"
+          : "";
+
+        var desc0HTML = records.PinnedArticle.description
+          ? "<div class='desc'>" + records.PinnedArticle.description + "</div>"
+          : "";
+
+        var bannerTemplate =
+          "<div class='banner-right-feature'><div class='inner'><div class='content'><span class='btn secondary'>Featured</span><h3 class='card-title'>" +
+          records.PinnedArticle.title +
+          "</h3>" +
+          desc0HTML +
+          "<a class='link-default' href='" +
+          records.PinnedArticle.url +
+          "'>Learn more</a></div>" +
+          image0HTML +
+          "</div></div>";
+        $("#list-section").append(bannerTemplate);
+      }
+      $("#list-section").append("<div class='row'></div>");
+
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+
+        var descHTML = records.results[i].description
+          ? "<div class='desc'>" + records.results[i].description + "</div>"
+          : "";
+
+        var listingTemplate =
+          "<div class='col-sm-6'><a class='card-default collection-card' href='" +
+          records.results[i].url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'> <div class='upper-part'> <div class='content-top'><span class='content-count'>" +
+          records.results[i].custom[0]["Value"] +
+          " articles</span> </div><h3 class='card-title'>" +
+          records.results[i].title +
+          "</h3>" +
+          descHTML +
+          "</div></div></a></div>";
+        $("#list-section .row").append(listingTemplate);
+      }
+    }
+    if (pageType == "RelevantArticlesForCollection") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].title +
+            "'/></div>"
+          : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+          records.results[i].url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].custom[1]["Value"] +
+          "</span><span class='card-label grey'>" +
+          records.results[i].custom[0]["Value"] +
+          "</span></div><div class='card-title'>" +
+          records.results[i].title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Publications") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+          records.results[i].url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].custom[1]["Value"] +
+          "</span><span class='card-label grey'>" +
+          records.results[i].custom[0]["Value"] +
+          "</span></div><div class='card-title'>" +
+          records.results[i].title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "MediaMaterial") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+          records.results[i].url +
+          "'><div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].custom[1]["Value"] +
+          "</span></div><div class='card-title'>" +
+          records.results[i].title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "MediaGallery") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+
+        var urlHTML = records.results[i].custom[2]["Value"]
+          ? records.results[i].custom[2]["Value"]
+          : records.results[i].url;
+        var descHTML = records.results[i].description
+          ? "<div class='desc'>" + records.results[i].description + "</div>"
+          : "";
+
+        if (records.results[i].custom[2]["Value"]) {
+          var targetHTML =
+            records.results[i].custom[3]["Value"] == "_blank"
+              ? "target='_blank'"
+              : "";
+          var div =
+            "<div class='col-lg-12'><a class='card-default horizontal' " +
+            targetHTML +
+            "href='" +
+            urlHTML +
+            "'>" +
+            imageHTML +
+            "<div class='card-content'><div class='card-title'>" +
+            records.results[i].title +
+            "</div>" +
+            descHTML +
+            "</div></a></div>";
+        } else {
+          var contentTopHTML =
+            records.results[i].custom[0]["Value"] &&
+            records.results[i].custom[0]["Value"] > 0
+              ? "<span class='date'>" +
+                records.results[i].custom[0]["Value"] +
+                " " +
+                records.results[i].custom[0]["Key"] +
+                "</span>"
+              : "";
+
+          if (
+            records.results[i].custom.length > 1 &&
+            records.results[i].custom[1]["Value"] &&
+            records.results[i].custom[1]["Value"] > 0
+          ) {
+            contentTopHTML +=
+              "<span class='card-label'>" +
+              records.results[i].custom[1]["Value"] +
+              " " +
+              records.results[i].custom[1]["Key"] +
+              "</span>";
+          }
+          var div =
+            "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+            urlHTML +
+            "'>" +
+            imageHTML +
+            "<div class='card-content'><div class='content-top'>" +
+            contentTopHTML +
+            "</div><div class='card-title'>" +
+            records.results[i].title +
+            "</div>" +
+            descHTML +
+            "</div></a></div>";
+        }
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Videos") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].Image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].Image +
+            "' alt='" +
+            records.results[i].Title +
+            "'/></div>"
+          : "";
+
+        var div =
+          "<div class='col-sm-6 col-lg-4'><a class='card-default video-card' href='" +
+          records.results[i].Url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='content-count'>" +
+          records.results[i].PublishedDate +
+          "</span></div><div class='card-title'>" +
+          records.results[i].Title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "SingleGallery") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var titleHTML = records.results[i].title
+          ? "title='" + records.results[i].title + "'"
+          : "";
+
+        var divHTML = "";
+        if (records.results[i].custom[0]["Value"]) {
+          var videoThumb = records.results[i].url
+            ? records.results[i].url
+            : "./../assets/images/no-video-thumb.png";
+
+          var imageHTML =
+            records.results[i].custom[1]["Value"] &&
+            "<div class='image-wrapper'><img src=" +
+              videoThumb +
+              "/></div><video width='100%' height='100%' controls id='fancyBoxVideo" +
+              i +
+              "' style='display:none;'><source src='" +
+              records.results[i].custom[1]["Value"] +
+              "' type='video/mp4'></video>";
+
+          divHTML =
+            "<div class='col-sm-6 col-lg-4'><a class='card-default video-card fancybox-media'" +
+            titleHTML +
+            " data-fancybox href='#fancyBoxVideo" +
+            i +
+            "'>" +
+            imageHTML +
+            "</a></div>";
+        } else {
+          var imageHTML =
+            records.results[i].url &&
+            "<div class='image-wrapper'><img src='" +
+              records.results[i].url +
+              "'/></div>";
+
+          divHTML =
+            "<div class='col-sm-6 col-lg-4'><a class='card-default fancybox'" +
+            titleHTML +
+            " data-fancybox-group='gallery' data-src='" +
+            records.results[i].url +
+            "'>" +
+            imageHTML +
+            "</a></div>";
+        }
+
+        $("#list-section .row").append(divHTML);
+        fancyBoxRendering();
+      }
+    }
+    if (pageType == "Blogs") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].Image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].Image +
+            "' alt='" +
+            records.results[i].Title +
+            "'/></div>"
+          : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal' href='" +
+          records.results[i].Url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].PublishedDate +
+          "</span></div><div class='card-title'>" +
+          records.results[i].Title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Guides") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].Image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].Image +
+            "' alt='" +
+            records.results[i].Title +
+            "'/></div>"
+          : "";
+        var hasVideo =
+          records.results[i].TemplateName === "VideoPage" ? "video-card" : "";
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal " +
+          hasVideo +
+          "' href='" +
+          records.results[i].Url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].PublishedDate +
+          "</span></div><div class='card-title'>" +
+          records.results[i].Title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "OurPrinciples") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].Image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].Image +
+            "' alt='" +
+            records.results[i].Title +
+            "'/></div>"
+          : "";
+
+        var hasVideo =
+          records.results[i].TemplateName === "People VideoPage"
+            ? "video-card"
+            : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal " +
+          hasVideo +
+          "' href='" +
+          records.results[i].Url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].PublishedDate +
+          "</span><span class='card-label grey'>" +
+          records.results[i].OurPrincipleType[0]["Value"] +
+          "</span></div><div class='card-title'>" +
+          records.results[i].Title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Stories") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].Image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].Image +
+            "' alt='" +
+            records.results[i].Title +
+            "'/></div>"
+          : "";
+
+        var hasVideo =
+          records.results[i].TemplateName === "OurStory VideoPage"
+            ? "video-card"
+            : "";
+        var div =
+          "<div class='col-lg-12'><a class='card-default horizontal " +
+          hasVideo +
+          "' href='" +
+          records.results[i].Url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>" +
+          records.results[i].PublishedDate +
+          "</span></div><div class='card-title'>" +
+          records.results[i].Title +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Reports") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+        var infographicsHTML =
+          records.results[i].custom[0]["Value"] &&
+          records.results[i].custom[0]["Value"] > 0
+            ? "<span class='card-label'>" +
+              records.results[i].custom[0]["Value"] +
+              " " +
+              records.results[i].custom[0]["Key"] +
+              "</span>"
+            : "";
+
+        var div =
+          "<div class='col-lg-12'><a class='card-default report' href='" +
+          records.results[i].url +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='content-top'><span class='date'>1 report</span>" +
+          infographicsHTML +
+          "</div><div class='card-title'>" +
+          records.results[i].title +
+          "</div><div class='desc'>" +
+          records.results[i].description +
+          "</div></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Journals") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var imageHTML = records.results[i].image
+          ? "<div class='image-wrapper'><img src='" +
+            records.results[i].image +
+            "' alt='" +
+            records.results[i].imagetext +
+            "'/></div>"
+          : "";
+
+        var fileDownload = records.results[i].custom[0]["Value"];
+        const myFile = fileDownload.split("|");
+        var div =
+          "<div class='col-lg-12'><a class='card-default report' target='_blank' href='" +
+          records.results[i].custom[1]["Value"] +
+          "'>" +
+          imageHTML +
+          "<div class='card-content'><div class='card-title'>" +
+          records.results[i].title +
+          "</div><div class='desc'>" +
+          records.results[i].description +
+          "</div><span class='download-link'>Download " +
+          myFile[1] +
+          " (" +
+          myFile[0] +
+          ")</span></div></a></div>";
+
+        $("#list-section .row").append(div);
+      }
+    }
+    if (pageType == "Deals") {
+      $("#list-section .row").html("");
+      for (var i = 0; i < records.results.length; i++) {
+        var labelsHTML = "";
+        var categoriesHTML = "";
+        for (var j = 0; j < records.results[i].Category.length; j++) {
+          if (j == 0) {
+            categoriesHTML +=
+              "<span class='text'>" +
+              records.results[i].Category[j] +
+              "</span>";
+          } else {
+            categoriesHTML +=
+              " | <span class='text'>" +
+              records.results[i].Category[j] +
+              "</span>";
+          }
+        }
+        for (var j = 0; j < records.results[i].Labels.length; j++) {
+          labelsHTML +=
+            "<span class='card-label " +
+            records.results[i].Labels[j]["Style"] +
+            "'>" +
+            records.results[i].Labels[j]["Text"] +
+            "</span>";
+        }
+        var promotionHTML = records.results[i].PromotionMessage
+          ? "<div class='gift-icon'><img src='" +
+            records.results[i].PromotionImage +
+            "'><span>" +
+            records.results[i].PromotionMessage +
+            "</span></div>"
+          : "";
+
+        var div =
+          "<div class='col-sm-6'><a class='card-default event deal' href='" +
+          records.results[i].Url +
+          "'> <div class='image-wrapper'> <img src='" +
+          records.results[i].Image +
+          "' alt='" +
+          records.results[i].Title +
+          "'> </div><div class='card-content'> <div class='upper-part'> <div class='icon-text'><span class='text'>" +
+          categoriesHTML +
+          "</span> </div><h3 class='card-title'>" +
+          records.results[i].Title +
+          "</h3> <div class='desc'>" +
+          records.results[i].Description +
+          "</div></div><div class='lower-part'>" +
+          labelsHTML +
+          promotionHTML +
+          "</div></div></a></div>";
+        $("#list-section .row").append(div);
+      }
+    }
+  };
+
+  var renderSkeleton = () => {
+    $("#list-section .row").html("");
+    for (var i = 0; i < 10; i++) {
+      var div =
+        "<div class='col-sm-6'><a class='card-default programme ' loading-skeleton='true' href='#'><div class='card-content'><div class='upper-part'><h3 class='card-title'>Operation</h3><div class='desc'>Receive training and certification to empower your businessx</div></div><div class='lower-part'><span class='link-default'>Learn more</span></div></div></a></div>";
+      $("#list-section .row").append(div);
+    }
+  };
+
+  var filterAccordion = "#filter-accordion";
+
+  $(window)
+    .resize(function () {
+      if ($(window).width() < 576) {
+        visiblePages = 3;
+      } else {
+        visiblePages = 5;
+      }
+
+      if ($(window).width() < 992) {
+        filterAccordion = "#filter-accordion-mb";
+      }
+    })
+    .resize();
+
+  if (
+    decodeURI(window.location.search).indexOf("topic") < 0 &&
+    totalPages > 0
+  ) {
+    apply_pagination();
+  }
+
+  //Apply pagination
+  function apply_pagination(pageCount, startPage) {
+    var pageNumber = pageCount ? pageCount : totalPages;
+    pagination.twbsPagination({
+      totalPages: pageNumber,
+      visiblePages: visiblePages,
+      initiateStartPageClick: false,
+      startPage: startPage,
+      first: "<span></span>",
+      prev: '<span class="prev-icon"> </span>',
+      next: '<span class="next-icon"></span>',
+      last: "<span></span>",
+      onPageClick: function (event, page) {
+        var pageData = getPageData();
+        fetchData(page, pageData);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+    });
+  }
+
+  //Fetch data from the api
+  function fetchData(page, pageData, startPage) {
+    var expertise = "";
+    var subexpertise = "";
+    var accreditation = "";
+    var membertype = "";
+    var institution = "";
+    var experience = "";
+    var industry = "";
+    var company = "";
+    var pillars = "";
+    var topics = "";
+    var audience = "";
+    var location = "";
+    var price = "";
+    var publications = "";
+    var mediaGallery = "";
+    var mediaMaterial = "";
+    var dateFrom = "";
+    var dateTo = "";
+    var category = "";
+    var membership = "";
+    var newsMediaMaterial =
+      $("[data-news-media-material]").length > 0
+        ? $("[data-news-media-material]").data("news-media-material")
+        : "";
+
+    if ($("#page-sorting-dropdown .dropdown-item.active").length > 0) {
+      sortorder = $("#page-sorting-dropdown .dropdown-item.active").data(
+        "value"
+      );
+    }
+    if ($("#page-count-dropdown .dropdown-item.active").length > 0) {
+      results = $("#page-count-dropdown .dropdown-item.active").data("value");
+    }
+    var newstype = $("#list-section").attr("data-newstype");
+    var sourceId = $("#list-section").attr("data-sourceid");
+    var membersonly = false;
+
+    if (pageData && pageData["expertise"] !== undefined) {
+      expertise = pageData["expertise"];
+    }
+
+    if (pageData && pageData["subexpertise"] !== undefined) {
+      subexpertise = pageData["subexpertise"];
+    }
+
+    if (pageData && pageData["accreditation"] !== undefined) {
+      accreditation = pageData["accreditation"];
+    }
+
+    if (pageData && pageData["institution"] !== undefined) {
+      institution = pageData["institution"];
+    }
+
+    if (pageData && pageData["membertype"] !== undefined) {
+      membertype = pageData["membertype"];
+    }
+
+    if (pageData && pageData["experience"] !== undefined) {
+      experience = pageData["experience"];
+    }
+
+    if (pageData && pageData["industry"] !== undefined) {
+      industry = pageData["industry"];
+    }
+
+    if (pageData && pageData["company"] !== undefined) {
+      company = pageData["company"];
+    }
+
+    if (pageData && pageData["pillars"] !== undefined) {
+      pillars = pageData["pillars"];
+    }
+
+    if (pageData && pageData["topics"] !== undefined) {
+      topics = pageData["topics"];
+    }
+
+    if (pageData && pageData["audience"] !== undefined) {
+      audience = pageData["audience"];
+    }
+
+    if (pageData && pageData["location"] !== undefined) {
+      location = pageData["location"];
+    }
+
+    if (pageData && pageData["price"] !== undefined) {
+      price = pageData["price"];
+    }
+
+    if (pageData && pageData["publications"] !== undefined) {
+      publications = pageData["publications"];
+    }
+
+    if (pageData && pageData["mediaGallery"] !== undefined) {
+      mediaGallery = pageData["mediaGallery"];
+    }
+
+    if (pageData && pageData["mediaMaterial"] !== undefined) {
+      mediaMaterial = pageData["mediaMaterial"];
+    }
+
+    if (pageData && pageData["dateFrom"] !== undefined) {
+      dateFrom = pageData["dateFrom"];
+    }
+
+    if (pageData && pageData["dateTo"] !== undefined) {
+      dateTo = pageData["dateTo"];
+    }
+
+    if (pageData && pageData["sortorder"] !== undefined) {
+      sortorder = pageData["sortorder"];
+    }
+
+    if (pageData && pageData["results"] !== undefined) {
+      results = pageData["results"];
+    }
+
+    if (pageData && pageData["membersonly"] !== false) {
+      membersonly = pageData["membersonly"];
+    }
+    if (pageData && pageData["category"] !== undefined) {
+      category = pageData["category"];
+    }
+
+    if (pageData && pageData["membership"] !== undefined) {
+      membership = pageData["membership"];
+    }
+    var payloadData = {
+      expertise: expertise,
+      subexpertise: subexpertise,
+      accreditation: accreditation,
+      institution: institution,
+      membertype: membertype,
+      experience: experience,
+      industry: industry,
+      company: company,
+      pillars: pillars,
+      topics: topics,
+      audience: audience,
+      location: location,
+      price: price,
+      publications: publications,
+      mediaGallery: mediaGallery,
+      mediaMaterial: mediaMaterial,
+      newsMediaMaterial: newsMediaMaterial,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      pagenumber: page,
+      results: results,
+      sortorder: sortorder,
+      sourceid: sourceId,
+      newstype: newstype,
+      membersonly: membersonly,
+      category: category,
+      membership: membership,
+    };
+
+    localStorage.setItem("expertise", expertise);
+    localStorage.setItem("subexpertise", subexpertise);
+    localStorage.setItem("accreditation", accreditation);
+    localStorage.setItem("institution", institution);
+    localStorage.setItem("membertype", membertype);
+    localStorage.setItem("experience", experience);
+    localStorage.setItem("industry", industry);
+    localStorage.setItem("company", company);
+    localStorage.setItem("pillars", pillars);
+    localStorage.setItem("topics", topics);
+    localStorage.setItem("audience", audience);
+    localStorage.setItem("location", location);
+    localStorage.setItem("price", price);
+    localStorage.setItem("publications", publications);
+    localStorage.setItem("mediaGallery", mediaGallery);
+    localStorage.setItem("mediaMaterial", mediaMaterial);
+    localStorage.setItem("newsMediaMaterial", newsMediaMaterial);
+    localStorage.setItem("dateFrom", dateFrom);
+    localStorage.setItem("dateTo", dateTo);
+    localStorage.setItem("pagenumber", page);
+    localStorage.setItem("results", results);
+    localStorage.setItem("sortorder", sortorder);
+    localStorage.setItem("sourceid", sourceId);
+    localStorage.setItem("newstype", newstype);
+    localStorage.setItem("membersonly", membersonly);
+    localStorage.setItem("category", category);
+    localStorage.setItem("membership", membership);
+    localStorage.setItem("data-pagetype", pageType);
+
+    if (
+      decodeURI(window.location.search).indexOf("topic") > 0 &&
+      totalPages == 0
+    )
+      return;
+    $.ajax({
+      url: api[pageType],
+      dataType: "json",
+      type: "post",
+      contentType: "application/json",
+      data: JSON.stringify(payloadData),
+      beforeSend: function () {
+        renderSkeleton();
+      },
+      success: function (data, textStatus, jQxhr) {
+        var res = data;
+        if (res.total == 0) {
+          $(
+            ".top-filter .wrapper, .top-filter-mb .count span, .filter-pagination-container"
+          ).hide();
+          renderCountBubble();
+          $("#list-section .row").html("");
+          var noRecordHtml =
+            "<div class='col-12'><h3 data-no-records-found>No records found</h3></div>";
+          $("#list-section .row").html("").append(noRecordHtml);
+        } else {
+          $(
+            ".top-filter .wrapper, .top-filter-mb .count span, .filter-pagination-container"
+          ).show();
+          var resCount = res.total;
+          var pageCount = calculatePagesCount(results, res.total);
+          renderResultCount(page, res.results.length, resCount, results);
+          renderCountBubble();
+          renderCards(res, pageType, page);
+          apply_pagination(pageCount, startPage);
+        }
+        if (startPage) {
+          if (
+            $(filterAccordion + " input[type='checkbox']:checked").length > 0
+          ) {
+            var accordionItem = $(
+              filterAccordion + " input[type='checkbox']:checked"
+            ).closest(".accordion-item");
+            accordionItem.find(".accordion-button.collapsed").trigger("click");
+            accordionItem.find(".clear-btn").show();
+
+            $(".filter-btn-container").show();
+          }
+          if ($(filterAccordion + " .dropdown-cmp").length > 0) {
+            if (
+              dateFrom !=
+                $(filterAccordion + " [date-from-dropdown]").data(
+                  "select-calendar"
+                ) ||
+              dateTo !=
+                $(filterAccordion + " [date-to-dropdown]").data(
+                  "select-calendar"
+                )
+            ) {
+              var accordionItem = $(
+                filterAccordion + " [date-from-dropdown]"
+              ).closest(".accordion-item");
+              accordionItem
+                .find(".accordion-button.collapsed")
+                .trigger("click");
+              accordionItem.find(".clear-btn").show();
+
+              $(".filter-btn-container").show();
+
+              var bubbleHtml =
+                "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='date' href='#' id='dateCount'><span>Date</span></i></a>";
+              $("#filter-tags").append(bubbleHtml);
+            }
+          }
+          if (
+            $(filterAccordion + " input[type='checkbox']:checked").length > 0 ||
+            $(filterAccordion + " .dropdown-cmp").length > 0
+          ) {
+            var filterCount =
+              $(filterAccordion + " input[type='checkbox']:checked").length +
+              $("#dateCount").length;
+            $(".filter-button strong").find("span").remove();
+            $(".filter-button strong").append(
+              "<span class='filterCount'> (" + filterCount + ")</span>"
+            );
+            $(".filter-button").addClass("active");
+          }
+        }
+      },
+      error: function (jqXhr, textStatus, errorThrown) {
+        console.log(errorThrown);
+      },
+    });
+  }
+
+  //Return page start number
+  var getPageStart = (pageSize, pageNr) => {
+    return pageSize * pageNr;
+  };
+
+  //Render result section eg: 1 - 2 of 20 results
+  var renderResultCount = (page, resCount, totalCount, results) => {
+    if (totalCount == 0) {
+      $(".count").empty();
+      $(
+        ".top-filter .wrapper, .top-filter-mb .count span, .filter-pagination-container"
+      ).hide();
+      $("#list-section .row").html("");
+      var noRecordHtml =
+        "<div class='col-12'><h3 data-no-records-found>No records found</h3></div>";
+      $("#list-section .row").html("").append(noRecordHtml);
+      return;
+    }
+    if (page == 1) {
+      start = page;
+    } else {
+      start = Math.max(getPageStart(results, page - 1), 0);
+      start = start + 1;
+    }
+    end = start + (resCount - 1);
+    var pageCountHtml =
+      "<span><strong>" +
+      start +
+      " - " +
+      end +
+      "</strong> of <strong>" +
+      totalCount +
+      "</strong> results </span>";
+    $(".count").attr("loading-skeleton", false);
+    $(".count").empty().append(pageCountHtml);
+  };
+  // Render result count on page load
+  var renderCountBubble = () => {
+    var expertiseCount = $("input[name=expertise]:checked").length;
+    var subexpertiseCount = $("input[name=subexpertise]:checked").length;
+    var accreditationCount = $("input[name=accreditation]:checked").length;
+    var institutionCount = $("input[name=institution]:checked").length;
+    var membertypeCount = $("input[name=membertype]:checked").length;
+    var experienceCount = $("input[name=experience]:checked").length;
+    var industryCount = $("input[name=industry]:checked").length;
+    var companyCount = $("input[name=company]:checked").length;
+    var pillarsCount = $("input[name=pillars]:checked").length;
+    var topicsCount = $("input[name=topics]:checked").length;
+    var audienceCount = $("input[name=audience]:checked").length;
+    var locationCount = $("input[name=location]:checked").length;
+    var priceCount = $("input[name=price]:checked").length;
+    var publicationCount = $("input[name=publication-types]:checked").length;
+    var mediaGalleryCount = $("input[name=mediaGallery-types]:checked").length;
+    var materialCount = $("input[name=media-material]:checked").length;
+    var categoryCount = $("input[name=category]:checked").length;
+    var membershipCount = $("input[name=membership-type]:checked").length;
+    if (expertiseCount > 0) {
+      $("#expertiseCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='expertise' id='expertiseCount'><span>Expertise (" +
+        expertiseCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#expertiseCount").remove();
+    }
+    if ($("#expertiseCount").length < 1) {
+      if (subexpertiseCount > 0) {
+        $("#expertiseCount").remove();
+        var parentChecks = [];
+        $("input[name=subexpertise]:checked").each(function () {
+          parentChecks.push(
+            $(this)
+              .closest(".nested-filter-li")
+              .find(".nested-filter-container")
+              .find(".parentCheckbox")
+              .val()
+          );
+          parentChecks = jQuery.unique(parentChecks);
+        });
+        var bubbleHtml =
+          "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='expertise' id='expertiseCount'><span>Expertise (" +
+          parentChecks.length +
+          ")</span></i></a>";
+        if ($(".tag-bubble").length < 1) {
+          $("#filter-tags").append(bubbleHtml);
+        }
+      } else {
+        $("#expertiseCount").remove();
+      }
+    }
+
+    if (experienceCount > 0) {
+      $("#industryCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='experience' id='experienceCount'><span>Experience (" +
+        experienceCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#experienceCount").remove();
+    }
+
+    if (accreditationCount > 0) {
+      $("#accreditationCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='accreditation' id='accreditationCount'><span>Accreditations (" +
+        accreditationCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#accreditationCount").remove();
+    }
+    if (institutionCount > 0) {
+      $("#institutionCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='institution' id='institutionCount'><span>Institutions (" +
+        institutionCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#institutionCount").remove();
+    }
+    if (membertypeCount > 0) {
+      $("#membertypeCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='membertype' id='membertypeCount'><span>Member Type (" +
+        membertypeCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#membertypeCount").remove();
+    }
+    if (industryCount > 0) {
+      $("#industryCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='industry' id='industryCount'><span>Industry (" +
+        industryCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#industryCount").remove();
+    }
+    if (companyCount > 0) {
+      $("#companyCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='company' id='companyCount'><span>Company Types (" +
+        companyCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#companyCount").remove();
+    }
+    if (pillarsCount > 0) {
+      $("#pillarsCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='pillars' id='pillarsCount'><span>Pillars (" +
+        pillarsCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#pillarsCount").remove();
+    }
+    if (topicsCount > 0) {
+      $("#topicCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' href='#' data-tag data-value='topics' id='topicCount'><span>Topics (" +
+        topicsCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#topicCount").remove();
+    }
+    if (audienceCount > 0) {
+      $("#audienceCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='audience' href='#' id='audienceCount'><span>Audience (" +
+        audienceCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#audienceCount").remove();
+    }
+    if (locationCount > 0) {
+      $("#locationCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='location' href='#' id='locationCount'><span>Location (" +
+        locationCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#locationCount").remove();
+    }
+    if (priceCount > 0) {
+      $("#priceCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='price' href='#' id='priceCount'><span>Price (" +
+        priceCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#priceCount").remove();
+    }
+    if (publicationCount > 0) {
+      $("#publicationCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='publication-types' href='#' id='publicationCount'><span>Publication (" +
+        publicationCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#publicationCount").remove();
+    }
+    if (mediaGalleryCount > 0) {
+      $("#mediaGalleryCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='mediaGallery-types' href='#' id='mediaGalleryCount'><span>Media Gallery (" +
+        mediaGalleryCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#mediaGalleryCount").remove();
+    }
+    if (materialCount > 0) {
+      $("#materialCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='media-material' href='#' id='materialCount'><span>Media Material (" +
+        materialCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#materialCount").remove();
+    }
+    if (categoryCount > 0) {
+      $("#categoryCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='category' href='#' id='categoryCount'><span>Category (" +
+        categoryCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#categoryCount").remove();
+    }
+    if (membershipCount > 0) {
+      $("#membershipCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='membership-type' href='#' id='membershipCount'><span>Membership (" +
+        membershipCount +
+        ")</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+    } else {
+      $("#membershipCount").remove();
+    }
+  };
+
+  //on tag bubble click, reset check boxes and remove clear button, if no check box selected remove apply all ans clear all button
+  $("#filter-tags").on("click", ".tag-bubble", function () {
+    var filterName = $(this).attr("data-value");
+    if (filterName === "date") {
+      var dateFromDefault = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      var dateToDefault = $("[date-to-dropdown]").attr("data-select-calendar");
+      var accordionWrap = $("[data-select-calendar]").closest(
+        ".accordion-item"
+      );
+      $("[date-from-dropdown] button span").text(dateFromDefault);
+      $("[date-to-dropdown] button span").text(dateToDefault);
+      $("[data-select-calendar] .dropdown-item.active").removeClass("active");
+      $(
+        '[date-from-dropdown] .dropdown-item:contains("' +
+          dateFromDefault +
+          '")'
+      ).addClass("active");
+      $(
+        '[date-to-dropdown] .dropdown-item:contains("' + dateToDefault + '")'
+      ).addClass("active");
+      accordionWrap.find(".clear-btn").hide();
+    } else {
+      $('input[name="' + filterName + '"]').each(function () {
+        this.checked = false;
+      });
+    }
+    var parentId = $(filterAccordion + " input[name='" + filterName + "']")
+      .closest(".accordion-collapse ")
+      .attr("id");
+    $("#" + parentId + " .clear-btn").hide();
+
+    if ($(filterAccordion + " input[type='checkbox']:checked ").length == 0) {
+      $(".filter-btn-container").hide();
+    }
+
+    $(this).remove();
+    if ($(this).attr("id")) {
+      $(".childCheckbox").prop("checked", false);
+    }
+
+    resetPagination();
+    var pageData = getPageData();
+    fetchData(page, pageData);
+
+    if ($(window).width() < 992) {
+      var filterCount =
+        $(".filter-mb input:checkbox:checked").length + $("#dateCount").length;
+      if (filterCount > 0) {
+        $(".filter-button strong").find("span").remove();
+        $(".filter-button strong").append(
+          "<span class='filterCount'> (" + filterCount + ")</span>"
+        );
+        $(".filter-button").addClass("active");
+      } else {
+        $(".filter-button strong").find("span").remove();
+        $(".filter-button").removeClass("active");
+      }
+    }
+  });
+
+  //Call fetchData function
+
+  $(".dropdown-cmp .dropdown-item").on("click", function (e) {
+    e.preventDefault();
+    if ($(this).closest("[data-select-calendar]").length > 0) {
+      $(this)
+        .closest(".dropdown-menu")
+        .find(".dropdown-item.active")
+        .removeClass("active");
+      $(this).addClass("active");
+      $(this)
+        .closest(".dropdown-cmp")
+        .find(".dropdown-toggle span")
+        .text($(this).text());
+      var clearBtn = $(this).closest(".accordion-item").find(".clear-btn");
+      clearBtn.show();
+      $(".clear-all-btn").show();
+      $(".filter-btn-container").show();
+
+      $("#dateCount").remove();
+      var bubbleHtml =
+        "<a class='btn secondary rightIcon small tag-bubble' data-tag data-value='date' href='#' id='dateCount'><span>Date</span></i></a>";
+      $("#filter-tags").append(bubbleHtml);
+      $(".filter-button").addClass("active");
+
+      var pageData = getPageData();
+      resetPagination();
+      fetchData(page, pageData);
+    } else {
+      $(this)
+        .closest(".dropdown-menu")
+        .find(".dropdown-item.active")
+        .removeClass("active");
+      $(this).addClass("active");
+      $(this)
+        .closest(".dropdown-cmp")
+        .find(".dropdown-toggle span")
+        .text($(this).text());
+      var pageData = getPageData();
+      resetPagination();
+      fetchData(page, pageData);
+    }
+  });
+
+  //Return page data to create payload
+  var getPageData = () => {
+    var pageData = [];
+
+    var expertise = new Array();
+    $(
+      "input[name='expertise']:checked:not(.filter-mb input[name='expertise']:checked)"
+    ).each(function () {
+      expertise.push($(this).val());
+    });
+
+    // $("input[name='expertise']:checked").each(function () {
+    //   expertise.push($(this).val());
+    // });
+
+    var subexpertise = new Array();
+    $(
+      "input[name='subexpertise']:checked:not(.filter-mb input[name='subexpertise']:checked)"
+    ).each(function () {
+      subexpertise.push($(this).val());
+    });
+
+    if ($(window).width() < 992) {
+      expertise.splice(0, expertise.length);
+      subexpertise.splice(0, subexpertise.length);
+      $(".filter-mb input[name='subexpertise']:checked").each(function () {
+        subexpertise.push($(this).val());
+      });
+      $(".filter-mb input[name='subexpertise']:checked").each(function () {
+        subexpertise.push($(this).val());
+      });
+    }
+    // $("input[name='subexpertise']:checked").each(function () {
+    //   subexpertise.push($(this).val());
+    // });
+
+    var experience = new Array();
+    $("input[name='experience']:checked").each(function () {
+      experience.push($(this).val());
+    });
+
+    var industry = new Array();
+    $("input[name='industry']:checked").each(function () {
+      industry.push($(this).val());
+    });
+
+    var company = new Array();
+    $("input[name='company']:checked").each(function () {
+      company.push($(this).val());
+    });
+
+    var pillars = new Array();
+    $("input[name='pillars']:checked").each(function () {
+      pillars.push($(this).val());
+    });
+
+    var topics = new Array();
+    $("input[name='topics']:checked").each(function () {
+      topics.push($(this).val());
+    });
+
+    var audience = new Array();
+    $("input[name='audience']:checked").each(function () {
+      audience.push($(this).val());
+    });
+
+    var accreditation = new Array();
+    $(
+      "input[name='accreditation']:checked:not(.filter-mb input[name='accreditation']:checked)"
+    ).each(function () {
+      accreditation.push($(this).val());
+    });
+
+    var institution = new Array();
+    $(
+      "input[name='institution']:checked:not(.filter-mb input[name='institution']:checked)"
+    ).each(function () {
+      institution.push($(this).val());
+    });
+
+    var membertype = new Array();
+    $(
+      "input[name='membertype']:checked:not(.filter-mb input[name='membertype']:checked)"
+    ).each(function () {
+      membertype.push($(this).val());
+    });
+
+    var location = new Array();
+    $("input[name='location']:checked").each(function () {
+      location.push($(this).attr("data-key"));
+    });
+
+    var price = new Array();
+    $("input[name='price']:checked").each(function () {
+      price.push($(this).attr("data-key"));
+    });
+
+    var publications = new Array();
+    $("input[name='publication-types']:checked").each(function () {
+      publications.push($(this).val());
+    });
+
+    var mediaGallery = new Array();
+    $("input[name='mediaGallery-types']:checked").each(function () {
+      mediaGallery.push($(this).val());
+    });
+
+    var mediaMaterial = new Array();
+    $("input[name='media-material']:checked").each(function () {
+      mediaMaterial.push($(this).val());
+    });
+
+    var category = new Array();
+    $("input[name='category']:checked").each(function () {
+      category.push($(this).val());
+    });
+
+    var membership = new Array();
+    $("input[name='membership-type']:checked").each(function () {
+      membership.push($(this).val());
+    });
+
+    if ($("#list-section").attr("data-pagetype") == "Professionals") {
+      var queryString = generateQueryString(
+        expertise.join("|"),
+        subexpertise.join("|"),
+        accreditation.join("|"),
+        institution.join("|"),
+        membertype.join("|")
+      );
+      var currentURL = window.location.href;
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.origin + window.location.pathname + "?" + queryString
+      );
+    }
+    var dateFrom = new Array();
+    var dateTo = new Array();
+
+    if ($(window).width() > 991) {
+      $("#dateFromBtn").each(function () {
+        dateFrom.push($(this).find("span").text());
+      });
+      $("#dateToBtn").each(function () {
+        dateTo.push($(this).find("span").text());
+      });
+    } else {
+      $("#dateFromBtnMb").each(function () {
+        dateFrom.push($(this).find("span").text());
+      });
+      $("#dateToBtnMb").each(function () {
+        dateTo.push($(this).find("span").text());
+      });
+    }
+
+    if ($("#page-sorting-dropdown .dropdown-item.active").length > 0) {
+      sortorder = $("#page-sorting-dropdown .dropdown-item.active").data(
+        "value"
+      );
+    }
+    pageData["sortorder"] = sortorder;
+
+    if ($("#page-count-dropdown .dropdown-item.active").length > 0) {
+      results = $("#page-count-dropdown .dropdown-item.active").data("value");
+    }
+    pageData["results"] = results;
+
+    expertise.length > 0 && (pageData["expertise"] = getString(expertise));
+    subexpertise.length > 0 &&
+      (pageData["subexpertise"] = getString(subexpertise));
+    accreditation.length > 0 &&
+      (pageData["accreditation"] = getString(accreditation));
+    institution.length > 0 &&
+      (pageData["institution"] = getString(institution));
+    membertype.length > 0 && (pageData["membertype"] = getString(membertype));
+    experience.length > 0 && (pageData["experience"] = getString(experience));
+    industry.length > 0 && (pageData["industry"] = getString(industry));
+    company.length > 0 && (pageData["company"] = getString(company));
+    pillars.length > 0 && (pageData["pillars"] = getString(pillars));
+    topics.length > 0 && (pageData["topics"] = getString(topics));
+    audience.length > 0 && (pageData["audience"] = getString(audience));
+    location.length > 0 && (pageData["location"] = getString(location));
+    price.length > 0 && (pageData["price"] = getString(price));
+    dateFrom.length > 0 && (pageData["dateFrom"] = getString(dateFrom));
+    dateTo.length > 0 && (pageData["dateTo"] = getString(dateTo));
+    publications.length > 0 &&
+      (pageData["publications"] = getString(publications));
+    mediaGallery.length > 0 &&
+      (pageData["mediaGallery"] = getString(mediaGallery));
+    mediaMaterial.length > 0 &&
+      (pageData["mediaMaterial"] = getString(mediaMaterial));
+    category.length > 0 && (pageData["category"] = getString(category));
+    membership.length > 0 && (pageData["membership"] = getString(membership));
+
+    if (window.location.search.indexOf("membersonly=true") > -1) {
+      pageData["membersonly"] = true;
+    }
+
+    return pageData;
+  };
+  //Clear all button click will uncheck all checkboxes and remove tag bubbles
+  $(filterAccordion + " .clear-all-btn").on("click", function (e) {
+    e.preventDefault();
+    $(filterAccordion + " .accordion-body ul .form-check-input").prop(
+      "checked",
+      false
+    );
+    var pageData = [];
+    if (
+      $("[date-from-dropdown]").length > 0 &&
+      $("[date-from-dropdown]").length > 0
+    ) {
+      var dateFromDefault = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      var dateToDefault = $("[date-to-dropdown]").attr("data-select-calendar");
+      $("[date-from-dropdown]:visible button span").text(
+        $("[date-from-dropdown]").attr("data-select-calendar")
+      );
+      $("[date-to-dropdown]:visible button span").text(
+        $("[date-to-dropdown]").attr("data-select-calendar")
+      );
+      $("[data-select-calendar] .dropdown-item.active").removeClass("active");
+      $(
+        '[date-from-dropdown] .dropdown-item:contains("' +
+          dateFromDefault +
+          '")'
+      ).addClass("active");
+      $(
+        '[date-to-dropdown] .dropdown-item:contains("' + dateToDefault + '")'
+      ).addClass("active");
+      pageData["dateFrom"] = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      pageData["dateTo"] = $("[date-to-dropdown]").attr("data-select-calendar");
+    }
+    if ($(window).width() > 992) {
+      $(filterAccordion + " .accordion-collapse").collapse("hide");
+    }
+
+    $(".filter-btn-container").hide();
+    $(filterAccordion + " .clear-btn").hide();
+    $("#filter-tags").empty();
+
+    resetPagination();
+    fetchData(1, pageData);
+  });
+
+  //Clear all button click will uncheck all checkboxes and remove tag bubbles for mobile
+  $(".clear-all-btn-mb").on("click", function (e) {
+    e.preventDefault();
+    $(filterAccordion + " .accordion-body ul .form-check-input").prop(
+      "checked",
+      false
+    );
+    var pageData = [];
+    if (
+      $("[date-from-dropdown]").length > 0 &&
+      $("[date-from-dropdown]").length > 0
+    ) {
+      var dateFromDefault = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      var dateToDefault = $("[date-to-dropdown]").attr("data-select-calendar");
+      $("[date-from-dropdown]:visible button span").text(dateFromDefault);
+      $("[date-to-dropdown]:visible button span").text(dateToDefault);
+      $("[data-select-calendar] .dropdown-item.active").removeClass("active");
+      $(
+        '[date-from-dropdown] .dropdown-item:contains("' +
+          dateFromDefault +
+          '")'
+      ).addClass("active");
+      $(
+        '[date-to-dropdown] .dropdown-item:contains("' + dateToDefault + '")'
+      ).addClass("active");
+      pageData["dateFrom"] = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      pageData["dateTo"] = $("[date-to-dropdown]").attr("data-select-calendar");
+    }
+    if ($(window).width() > 992) {
+      $(filterAccordion + " .accordion-collapse").collapse("hide");
+    }
+
+    $(".filter-btn-container").hide();
+    $(filterAccordion + " .clear-btn").hide();
+    $("#filter-tags").empty();
+
+    $(".filter-button strong").find("span").remove();
+    $(".filter-button").removeClass("active");
+
+    resetPagination();
+    fetchData(1, pageData);
+  });
+
+  //Reset pagination
+  var resetPagination = () => {
+    pagination.empty();
+    pagination.removeData("twbs-pagination");
+    pagination.unbind("page");
+  };
+
+  //Get string with | saperator
+  var getString = (arr) => {
+    return arr.join("|");
+  };
+
+  //Apply button click event - mobile filter
+  $(".filter-apply-btn-mb").on("click", function () {
+    var checkCheckboxLength = $(".filter-mb input:checkbox:checked").length;
+
+    if (checkCheckboxLength > 0 || $("#dateCount").length > 0) {
+      var filterCount = checkCheckboxLength + $("#dateCount").length;
+      $(".filter-button strong").find("span").remove();
+      $(".filter-button strong").append(
+        "<span class='filterCount'> (" + filterCount + ")</span>"
+      );
+      $(".filter-button").addClass("active");
+    } else {
+      $(".filter-button strong").find("span").remove();
+      $(".filter-button").removeClass("active");
+    }
+    var pageData = getPageDataMB();
+    resetPagination();
+    fetchData(page, pageData);
+  });
+
+  //Get page data for mobile to create payload
+  var getPageDataMB = () => {
+    var pageData = [],
+      page = 1;
+
+    var expertise = new Array();
+    $(".filter-mb input[name='expertise']:checked").each(function () {
+      expertise.push($(this).val());
+    });
+
+    var subexpertise = new Array();
+    $(".filter-mb input[name='subexpertise']:checked").each(function () {
+      subexpertise.push($(this).val());
+    });
+
+    var experience = new Array();
+    $(".filter-mb input[name='experience']:checked").each(function () {
+      experience.push($(this).val());
+    });
+
+    var industry = new Array();
+    $(".filter-mb input[name='industry']:checked").each(function () {
+      industry.push($(this).val());
+    });
+
+    var company = new Array();
+    $(".filter-mb input[name='company']:checked").each(function () {
+      company.push($(this).val());
+    });
+
+    var pillars = new Array();
+    $(".filter-mb input[name='pillars']:checked").each(function () {
+      pillars.push($(this).attr("data-key"));
+    });
+
+    var topics = new Array();
+    $(".filter-mb input[name='topics']:checked").each(function () {
+      topics.push($(this).val());
+    });
+
+    var audience = new Array();
+    $(".filter-mb input[name='audience']:checked").each(function () {
+      audience.push($(this).val());
+    });
+
+    var accreditation = new Array();
+    $(".filter-mb input[name='accreditation']:checked").each(function () {
+      accreditation.push($(this).val());
+    });
+
+    var institution = new Array();
+    $(".filter-mb input[name='institution']:checked").each(function () {
+      institution.push($(this).val());
+    });
+
+    var membertype = new Array();
+    $(".filter-mb input[name='membertype']:checked").each(function () {
+      membertype.push($(this).val());
+    });
+
+    var location = new Array();
+    $(".filter-mb input[name='location']:checked").each(function () {
+      location.push($(this).attr("data-key"));
+    });
+
+    var price = new Array();
+    $(".filter-mb input[name='price']:checked").each(function () {
+      price.push($(this).attr("data-key"));
+    });
+
+    var publications = new Array();
+    $(".filter-mb input[name='publication-types']:checked").each(function () {
+      publications.push($(this).val());
+    });
+
+    var mediaGallery = new Array();
+    $(".filter-mb input[name='mediaGallery-types']:checked").each(function () {
+      mediaGallery.push($(this).val());
+    });
+
+    var mediaMaterial = new Array();
+    $(".filter-mb input[name='media-material']:checked").each(function () {
+      mediaMaterial.push($(this).val());
+    });
+
+    var dateFrom = new Array();
+    $(".filter-mb #dateFromBtnMb").each(function () {
+      dateFrom.push($(this).find("span").text());
+    });
+    var dateTo = new Array();
+    $(".filter-mb #dateToBtnMb").each(function () {
+      dateTo.push($(this).find("span").text());
+    });
+
+    var category = new Array();
+    $(".filter-mb input[name='category']:checked").each(function () {
+      category.push($(this).val());
+    });
+
+    var membership = new Array();
+    $(".filter-mb input[name='membership-type']:checked").each(function () {
+      membership.push($(this).val());
+    });
+
+    sortorder = $('.filter-mb input[name="sortingOption"]:checked').val();
+    pageData["sortorder"] = sortorder;
+    if ($("#page-count-dropdown .dropdown-item.active").length > 0) {
+      results = $("#page-count-dropdown .dropdown-item.active").data("value");
+    }
+    pageData["results"] = results;
+
+    if ($("#list-section").attr("data-pagetype") == "Professionals") {
+      var queryString = generateQueryString(
+        expertise.join("|"),
+        subexpertise.join("|"),
+        accreditation.join("|"),
+        institution.join("|"),
+        membertype.join("|")
+      );
+      var currentURL = window.location.href;
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.origin + window.location.pathname + "?" + queryString
+      );
+    }
+
+    expertise.length > 0 && (pageData["expertise"] = getString(expertise));
+    subexpertise.length > 0 &&
+      (pageData["subexpertise"] = getString(subexpertise));
+    accreditation.length > 0 &&
+      (pageData["accreditation"] = getString(accreditation));
+    institution.length > 0 &&
+      (pageData["institution"] = getString(institution));
+    membertype.length > 0 && (pageData["membertype"] = getString(membertype));
+    experience.length > 0 && (pageData["experience"] = getString(experience));
+    industry.length > 0 && (pageData["industry"] = getString(industry));
+    company.length > 0 && (pageData["company"] = getString(company));
+    pillars.length > 0 && (pageData["pillars"] = getString(pillars));
+    topics.length > 0 && (pageData["topics"] = getString(topics));
+    audience.length > 0 && (pageData["audience"] = getString(audience));
+    location.length > 0 && (pageData["location"] = getString(location));
+    price.length > 0 && (pageData["price"] = getString(price));
+    dateFrom.length > 0 && (pageData["dateFrom"] = getString(dateFrom));
+    dateTo.length > 0 && (pageData["dateTo"] = getString(dateTo));
+    publications.length > 0 &&
+      (pageData["publications"] = getString(publications));
+    mediaGallery.length > 0 &&
+      (pageData["mediaGallery"] = getString(mediaGallery));
+    mediaMaterial.length > 0 &&
+      (pageData["mediaMaterial"] = getString(mediaMaterial));
+    category.length > 0 && (pageData["category"] = getString(category));
+    membership.length > 0 && (pageData["membership"] = getString(membership));
+    if (window.location.search.indexOf("membersonly=true") > -1) {
+      pageData["membersonly"] = true;
+    }
+    return pageData;
+  };
+
+  //ResolveQuerystring
+  if ($("#list-section").attr("data-pagetype") == "Professionals") {
+    function decodeQueryString() {
+      var queryString = window.location.search.slice(1); // Remove the leading '?'
+      var params = new URLSearchParams(queryString);
+
+      var expertise = params.get("expertise");
+      var subexpertise = params.get("subexpertise");
+      var accreditation = params.get("accreditation");
+      var institution = params.get("institution");
+      var membertype = params.get("membertype");
+
+      // Decode values
+      var decodedExpertise = expertise ? decodeURIComponent(expertise) : "";
+      var decodedSubexpertise = subexpertise
+        ? decodeURIComponent(subexpertise)
+        : "";
+      var decodedAccreditation = accreditation
+        ? decodeURIComponent(accreditation)
+        : "";
+      var decodedInstitution = accreditation
+        ? decodeURIComponent(institution)
+        : "";
+      var decodedMemberType = membertype ? decodeURIComponent(membertype) : "";
+
+      if (
+        expertise == null &&
+        subexpertise == null &&
+        accreditation == null &&
+        institution == null &&
+        membertype == null
+      )
+        return;
+      // Convert pipe-separated strings to arrays
+      var expertiseArray = decodedExpertise.split("|");
+      var subexpertiseArray = decodedSubexpertise.split("|");
+      var accreditationArray = decodedAccreditation.split("|");
+      var institutionArray = decodedInstitution.split("|");
+      var membertypeArray = decodedMemberType.split("|");
+
+      if ($(window).width() > 992) {
+        $(".filter-cmp .accordion-body input[name='expertise'].parentCheckbox")
+          .filter(function () {
+            if (expertise != null && expertise.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return expertise.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-cmp .accordion-body input[name='accreditation']")
+          .not(
+            ".filter-mb .filter-cmp .accordion-body input[name='accreditation']"
+          )
+          .filter(function () {
+            if (
+              accreditation != null &&
+              accreditation.includes($(this).val())
+            ) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return accreditation.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-cmp .accordion-body input[name='institution']")
+          .not(
+            ".filter-mb .filter-cmp .accordion-body input[name='institution']"
+          )
+          .filter(function () {
+            if (institution != null && institution.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return institution.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-cmp .accordion-body input[name='membertype']")
+          .not(
+            ".filter-mb .filter-cmp .accordion-body input[name='membertype']"
+          )
+          .filter(function () {
+            if (membertype != null && membertype.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return membertype.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+      } else {
+        $(
+          ".filter-mb .filter-cmp .accordion-body input[name='expertise'].parentCheckbox"
+        )
+          .filter(function () {
+            if (expertise != null && expertise.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return expertise.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-mb .filter-cmp .accordion-body input[name='accreditation']")
+          .filter(function () {
+            if (
+              accreditation != null &&
+              accreditation.includes($(this).val())
+            ) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return accreditation.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-mb .filter-cmp .accordion-body input[name='institution']")
+          .filter(function () {
+            if (institution != null && institution.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return institution.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+
+        $(".filter-mb .filter-cmp .accordion-body input[name='membertype']")
+          .filter(function () {
+            if (membertype != null && membertype.includes($(this).val())) {
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".childCheckbox")
+                .prop("checked", true);
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".nested-filters")
+                .attr("style", "padding-top: 20px; max-height: 1000px;");
+              $(this)
+                .closest(".nested-filter-li")
+                .find(".toggle-icon")
+                .removeClass("ri-add-line")
+                .addClass("ri-subtract-line");
+              return membertype.includes($(this).val());
+            }
+          })
+          .prop("checked", true);
+      }
+
+      $(".filter-cmp .accordion-body input[name='subexpertise'].childCheckbox")
+        .filter(function () {
+          if (subexpertise != null && subexpertise.includes($(this).val())) {
+            $(this)
+              .closest(".nested-filter-li")
+              .find(".nested-filters")
+              .attr("style", "padding-top: 20px; max-height: 1000px;");
+            $(this)
+              .closest(".nested-filter-li")
+              .find(".toggle-icon")
+              .removeClass("ri-add-line")
+              .addClass("ri-subtract-line");
+            return subexpertiseArray.includes($(this).val());
+          }
+        })
+        .prop("checked", true);
+
+      if ($(window).width() > 992) {
+        $(".filter-mb .form-check-input.childCheckbox").prop("checked", false);
+        $(".filter-mb input[name=expertise]:checked").prop("checked", false);
+        var pageData = getPageData();
+        resetPagination();
+        fetchData(page, pageData);
+      } else {
+        var pageData = getPageDataMB();
+        resetPagination();
+        fetchData(page, pageData);
+      }
+    }
+
+    // Call the function on page load
+    decodeQueryString();
+  }
+
+  //Two level checkbox
+  $(
+    filterAccordion +
+      " .accordion-body ul .nested-filter-li .form-check-input.parentCheckbox"
+  ).on("click", function () {
+    var parentId = $(this).closest(".accordion-collapse ").attr("id");
+    $("#" + parentId)
+      .find(".clear-btn")
+      .hide();
+    var checkboxName = $(this).attr("name");
+    var chekedlengthByName = $(
+      filterAccordion + " input[name='" + checkboxName + "']:checked"
+    ).length;
+
+    if (chekedlengthByName > 0) {
+      $("#" + parentId + " .clear-btn").show();
+    } else {
+      $("#" + parentId + " .clear-btn").hide();
+      $(".tag-bubble[data-value='" + checkboxName + "']").remove();
+    }
+
+    if ($(filterAccordion + " input:checkbox:checked").length > 0) {
+      $(".filter-btn-container").show();
+    } else {
+      $(".filter-btn-container").hide();
+    }
+    var isChecked = $(this).prop("checked");
+    $(this)
+      .closest(".nested-filter-li")
+      .find(".childCheckbox:not(.filter-mb)")
+      .prop("checked", isChecked);
+    //$(this).closest(".nested-filter-li").find(".filter-mb .childCheckbox").prop("checked", false);
+    // API call only for desktop checkbox click
+    if ($(window).width() > 992) {
+      var pageData = getPageData();
+      resetPagination();
+      fetchData(page, pageData);
+    }
+  });
+
+  //Click on checkbox
+  $(filterAccordion + " .accordion-body ul .form-check-input").on(
+    "click",
+    function () {
+      var parentId = $(this).closest(".accordion-collapse ").attr("id");
+      $("#" + parentId)
+        .find(".clear-btn")
+        .hide();
+      var checkboxName = $(this).attr("name");
+      var chekedlengthByName = $(
+        filterAccordion + " input[name='" + checkboxName + "']:checked"
+      ).length;
+
+      if (chekedlengthByName > 0) {
+        $("#" + parentId + " .clear-btn").show();
+      } else {
+        $("#" + parentId + " .clear-btn").hide();
+        $(".tag-bubble[data-value='" + checkboxName + "']").remove();
+      }
+
+      if ($(filterAccordion + " input:checkbox:checked").length > 0) {
+        $(".filter-btn-container").show();
+      } else {
+        $(".filter-btn-container").hide();
+      }
+      // API call only for desktop checkbox click
+      if ($(window).width() > 992) {
+        var pageData = getPageData();
+        resetPagination();
+        fetchData(page, pageData);
+      }
+    }
+  );
+
+  //Click on clear button
+  $(filterAccordion + " .clear-btn").on("click", function (e) {
+    e.preventDefault();
+    if (window.location.search.length > 0) {
+      window.location.search = "";
+    }
+    var parentId = $(this).closest(".accordion-collapse ").attr("id");
+    $(this).hide();
+    var pageData = [];
+    $("#" + parentId + " ul li").each(function () {
+      $(this).find("input:checkbox").prop("checked", false);
+      $(this).find("input:radio").prop("checked", false);
+    });
+    if (
+      $(this).closest(".accordion-body").find("[data-select-calendar]").length >
+      0
+    ) {
+      var dateFromDefault = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      var dateToDefault = $("[date-to-dropdown]").attr("data-select-calendar");
+      $("[date-from-dropdown]:visible button span").text(dateFromDefault);
+      $("[date-to-dropdown]:visible button span").text(dateToDefault);
+      $("[data-select-calendar] .dropdown-item.active").removeClass("active");
+      $(
+        '[date-from-dropdown] .dropdown-item:contains("' +
+          dateFromDefault +
+          '")'
+      ).addClass("active");
+      $(
+        '[date-to-dropdown] .dropdown-item:contains("' + dateToDefault + '")'
+      ).addClass("active");
+      pageData["dateFrom"] = $("[date-from-dropdown]").attr(
+        "data-select-calendar"
+      );
+      pageData["dateTo"] = $("[date-to-dropdown]").attr("data-select-calendar");
+      $("#dateCount").remove();
+      $(this).hide();
+      if ($(".clear-btn:visible").length < 1) {
+        $(".clear-all-btn").hide();
+      }
+    }
+    // API call only for desktop checkbox click
+    if ($(window).width() >= 992) {
+      pageData = getPageData();
+      if (
+        $(this).closest(".accordion-body").find("[data-select-calendar]")
+          .length > 0
+      ) {
+        pageData["dateFrom"] = $("[date-from-dropdown]").attr(
+          "data-select-calendar"
+        );
+        pageData["dateTo"] = $("[date-to-dropdown]").attr(
+          "data-select-calendar"
+        );
+      }
+      resetPagination();
+      fetchData(page, pageData);
+
+      if ($(filterAccordion + " input[type='checkbox']:checked").length == 0) {
+        $(".filter-btn-container").hide();
+      }
+    }
+  });
+
+  if ($("[data-deal]").length > 0 && performance.navigation.type != 2) {
+    const publicationHash = decodeURI(window.location.hash).replace("#", "");
+
+    var arr = $("[data-deal]").filter(function () {
+      return $(this).attr("data-deal") === publicationHash;
+    });
+
+    if ($(window).width() > 991) {
+      $(arr[0]).trigger("click");
+      $(arr[0])
+        .closest(".accordion-item")
+        .find(".accordion-button")
+        .trigger("click");
+    } else {
+      $(arr[1]).trigger("click");
+      $(".filter-apply-btn-mb").trigger("click");
+    }
+  }
+  if ($("[data-publication]").length > 0 && performance.navigation.type != 2) {
+    const publicationHash = decodeURI(window.location.hash).replace("#", "");
+
+    var arr = $("[data-publication]").filter(function () {
+      return $(this).attr("data-publication") === publicationHash;
+    });
+
+    if ($(window).width() > 991) {
+      $(arr[0]).trigger("click");
+      $(arr[0])
+        .closest(".accordion-item")
+        .find(".accordion-button")
+        .trigger("click");
+    } else {
+      $(arr[1]).trigger("click");
+      $(".filter-apply-btn-mb").trigger("click");
+    }
+  }
+  if (
+    $("[data-media-material]").length > 0 &&
+    performance.navigation.type != 2
+  ) {
+    const mediaMaterialHash = decodeURI(window.location.hash).replace("#", "");
+    var arr = $("[data-media-material]").filter(function () {
+      return $(this).attr("data-media-material") === mediaMaterialHash;
+    });
+    if ($(window).width() > 991) {
+      $(arr[0]).trigger("click");
+      $(arr[0])
+        .closest(".accordion-item")
+        .find(".accordion-button")
+        .trigger("click");
+    } else {
+      $(arr[1]).trigger("click");
+      $(".filter-apply-btn-mb").trigger("click");
+    }
+  }
+
+  if (
+    decodeURI(window.location.search).indexOf("topic") > 0 ||
+    decodeURI(window.location.search).indexOf("tag") > 0 ||
+    decodeURI(window.location.search).indexOf("newstype") > 0
+  ) {
+    let searchText = decodeURI(window.location.search)
+      .replace("?topic=", "")
+      .replace("?tag=", "")
+      .replace("?newstype=", "")
+      .replace("&sc_lang=en", "");
+    searchText = searchText.toLowerCase();
+
+    if (totalRecords == 0) {
+      $(
+        ".top-filter .wrapper, .top-filter-mb .count span, .filter-pagination-container"
+      ).hide();
+      $("#list-section .row").html("");
+      var noRecordHtml =
+        "<div class='col-12'><h3 data-no-records-found>No records found</h3></div>";
+      $("#list-section .row").html("").append(noRecordHtml);
+    }
+    var arr = $('input[type="checkbox"]').filter(function () {
+      return $(this).val().toLowerCase() === searchText;
+    });
+    if ($(window).width() > 991) {
+      $(arr[0])
+        .closest(".accordion-item")
+        .find(".accordion-button.collapsed")
+        .trigger("click");
+      $(arr[0]).trigger("click");
+    } else {
+      $(arr[1]).trigger("click");
+      $(".filter-apply-btn-mb").trigger("click");
+    }
+    renderCountBubble();
+  }
+
+  if (performance.navigation.type == 2 && $("#list-section").length > 0) {
+    // Filter is aready reset because landed to another Filter page before click on back button
+    if (!localStorage.getItem("data-pagetype")) {
+      renderResultCount(page, recPerPage, totalRecords, recPerPage);
+      return;
+    }
+    if (
+      localStorage.getItem("data-pagetype") &&
+      localStorage.getItem("data-pagetype") !== pageType
+    ) {
+      renderResultCount(page, recPerPage, totalRecords, recPerPage);
+      $(".accordion-button").on("click", function () {
+        $('.filter-cmp input[type="checkbox"]:checked').prop("checked", false);
+      });
+      $(".filter-button").on("click", function () {
+        $('.filter-cmp input[type="checkbox"]:checked').prop("checked", false);
+      });
+      // location.reload();
+    } else {
+      // Page keep its filter from previous time so need to reload data from localstorage
+      var pageData = [];
+      localStorage.getItem("pagenumber") &&
+        (pageData["pagenumber"] = localStorage.getItem("pagenumber"));
+      localStorage.getItem("sortorder") &&
+        (pageData["sortorder"] = localStorage.getItem("sortorder"));
+      localStorage.getItem("results") &&
+        (pageData["results"] = localStorage.getItem("results"));
+      localStorage.getItem("expertise") &&
+        (pageData["expertise"] = localStorage.getItem("expertise"));
+      localStorage.getItem("subexpertise") &&
+        (pageData["subexpertise"] = localStorage.getItem("subexpertise"));
+      localStorage.getItem("experience") &&
+        (pageData["experience"] = localStorage.getItem("experience"));
+      localStorage.getItem("industry") &&
+        (pageData["industry"] = localStorage.getItem("industry"));
+      localStorage.getItem("company") &&
+        (pageData["company"] = localStorage.getItem("company"));
+      localStorage.getItem("pillars") &&
+        (pageData["pillars"] = localStorage.getItem("pillars"));
+      localStorage.getItem("topics") &&
+        (pageData["topics"] = localStorage.getItem("topics"));
+      localStorage.getItem("audience") &&
+        (pageData["audience"] = localStorage.getItem("audience"));
+      localStorage.getItem("location") &&
+        (pageData["location"] = localStorage.getItem("location"));
+      localStorage.getItem("price") &&
+        (pageData["price"] = localStorage.getItem("price"));
+
+      localStorage.getItem("dateTo") &&
+        (pageData["dateTo"] = localStorage.getItem("dateTo"));
+      localStorage.getItem("publications") &&
+        (pageData["publications"] = localStorage.getItem("publications"));
+      localStorage.getItem("mediaGallery") &&
+        (pageData["mediaGallery"] = localStorage.getItem("mediaGallery"));
+      localStorage.getItem("mediaMaterial") &&
+        (pageData["mediaMaterial"] = localStorage.getItem("mediaMaterial"));
+      localStorage.getItem("newsMediaMaterial") &&
+        (pageData["newsMediaMaterial"] =
+          localStorage.getItem("newsMediaMaterial"));
+      localStorage.getItem("category") &&
+        (pageData["category"] = localStorage.getItem("category"));
+      localStorage.getItem("membership") &&
+        (pageData["membership"] = localStorage.getItem("membership"));
+
+      if ($("[data-select-calendar]").data("select-calendar")) {
+        pageData["dateFrom"] = localStorage.getItem("dateFrom")
+          ? localStorage.getItem("dateFrom")
+          : $("[date-from-dropdown]").data("select-calendar");
+        pageData["dateTo"] = localStorage.getItem("dateTo")
+          ? localStorage.getItem("dateTo")
+          : $("[date-to-dropdown]").data("select-calendar");
+      }
+      resetPagination();
+      var pageNumber = localStorage.getItem("pagenumber")
+        ? localStorage.getItem("pagenumber")
+        : 1;
+      fetchData(Number(pageNumber), pageData, Number(pageNumber));
+
+      applyDropdown($("#page-count-dropdown"), Number(pageData["results"]));
+      applyDropdown($("#page-sorting-dropdown"), Number(pageData["sortorder"]));
+
+      if (pageData["dateFrom"]) {
+        applyDropdownDate(
+          $(filterAccordion + " [date-from-dropdown]"),
+          pageData["dateFrom"]
+        );
+      }
+      if (pageData["dateTo"]) {
+        applyDropdownDate(
+          $(filterAccordion + " [date-to-dropdown]"),
+          pageData["dateTo"]
+        );
+      }
+    }
+  } else {
+    renderResultCount(page, recPerPage, totalRecords, recPerPage);
+  }
+
+  // refresh Filter page and it's Filter page
+  if (performance.navigation.type == 1 && $("#list-section").length > 0) {
+    localStorage.clear();
+  }
+  // land to new page by url and it's Filter page
+  if (performance.navigation.type == 0 && $("#list-section").length > 0) {
+    localStorage.clear();
+    localStorage.setItem("data-pagetype", pageType);
+  }
+});
+
+function applyDropdown(dropdownId, dataValue) {
+  dropdownId.find(".dropdown-item.active").removeClass("active");
+  var newSelectedItem = dropdownId
+    .find(".dropdown-item")
+    .filter("[data-value=" + dataValue + "]");
+  newSelectedItem.addClass("active");
+  dropdownId.find(".dropdown-toggle span").text(newSelectedItem.text());
+}
+
+function applyDropdownDate(dropdownId, value) {
+  dropdownId.find(".dropdown-item.active").removeClass("active");
+  var newSelectedItem = dropdownId.find(
+    ".dropdown-item:contains(" + value + ")"
+  );
+  newSelectedItem.addClass("active");
+  dropdownId.find(".dropdown-toggle span").text(newSelectedItem.text());
+}
+
+// $(".parentCheckbox").change(function () {
+//   var isChecked = $(this).prop("checked");
+//   $(this).closest(".nested-filter-li").find(".childCheckbox").prop("checked", isChecked);
+// });
+
+$(".childCheckbox").change(function () {
+  if (
+    $(this).closest(".nested-filter-li").find(".childCheckbox").length ===
+    $(this).closest(".nested-filter-li").find(".childCheckbox:checked").length
+  ) {
+    $(this)
+      .closest(".nested-filter-li")
+      .find(".parentCheckbox")
+      .prop("checked", true);
+  } else {
+    $(this)
+      .closest(".nested-filter-li")
+      .find(".parentCheckbox")
+      .prop("checked", false);
+  }
+});
+
+function generateQueryString(
+  expertise,
+  subexpertise,
+  accreditation,
+  institution,
+  membertype
+) {
+  var encodedExpertiseValue = expertise ? encodeURIComponent(expertise) : "";
+  var encodedSubexpertiseValue = encodeURIComponent(subexpertise);
+  var encodedAccreditationValue = encodeURIComponent(accreditation);
+  var encodedInstitutionValue = encodeURIComponent(institution);
+  var encodedMemberTypeValue = encodeURIComponent(membertype);
+
+  var newParameter = "";
+  if (encodedExpertiseValue) {
+    newParameter += "expertise=" + encodedExpertiseValue;
+  }
+  if (encodedSubexpertiseValue) {
+    newParameter +=
+      (newParameter.length > 0 ? "&" : "") + "subexpertise=" + subexpertise;
+  }
+  if (encodedAccreditationValue) {
+    newParameter +=
+      (newParameter.length > 0 ? "&" : "") + "accreditation=" + accreditation;
+  }
+  if (encodedInstitutionValue) {
+    newParameter +=
+      (newParameter.length > 0 ? "&" : "") + "institution=" + institution;
+  }
+  if (encodedMemberTypeValue) {
+    newParameter +=
+      (newParameter.length > 0 ? "&" : "") + "membertype=" + membertype;
+  }
+
+  var updatedQueryString = newParameter;
+
+  return updatedQueryString;
+}
